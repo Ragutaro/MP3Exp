@@ -110,7 +110,8 @@ begin
   finally
     sl.Free;
   end;
-  frmMain.tvwTree.AddChildNode(s, ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_FOLDER_OPEN);
+//  frmMain.tvwTree.AddChildNode(s, ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_FOLDER_OPEN);
+  frmMain.tvwTree.AddChildNode(s, ICO_MUSIC_FOLDER_CLOSE_SYM, ICO_MUSIC_FOLDER_OPEN_SYM);
   n.AlphaSort(True);
   ShellExecuteSimple('MakeSymLink.bat');
 end;

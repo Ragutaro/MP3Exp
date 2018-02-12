@@ -375,8 +375,8 @@ begin
   if (item <> Nil) and (item.Caption <> '') then
   begin
     Case tvwTree.Selected.ImageIndex of
-      ICO_MUSIC_ALBUM_CLOSE : _CreatePlayList;
-      ICO_PLAYLIST_FILE     : _PlayFromPlaylist;
+      ICO_MUSIC_ALBUM_CLOSE, ICO_MUSIC_ALBUM_CLOSE_SYM : _CreatePlayList;
+      ICO_PLAYLIST_FILE                                : _PlayFromPlaylist;
     end;
     wmp.settings.volume := 100;
     m := wmp.currentPlaylist.Item[item.Index];
@@ -600,7 +600,7 @@ begin
         popLvwAdd2iTunes.Enabled    := False;
         popLvwDelete.Enabled        := False;
       end;
-    ICO_MUSIC_FOLDER_CLOSE :
+    ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_FOLDER_CLOSE_SYM :
       begin
         popLvwShowAlbumArt.Enabled  := False;
         popLvwRename.Enabled        := False;
@@ -769,6 +769,14 @@ begin
         end;
         //削除処理
         if MessageDlg(sMsg, '', mtConfirmation, [mbYes, mbNo]) = mrYes then
+        begin
+          DeleteFolder(s);
+          n.Delete;
+        end;
+      end;
+    ICO_MUSIC_FOLDER_CLOSE_SYM, ICO_MUSIC_ALBUM_CLOSE_SYM :
+      begin
+        if MessageDlg(C_DelSymLink, '', mtConfirmation, [mbYes, mbNo]) = mrYes then
         begin
           DeleteFolder(s);
           n.Delete;
@@ -1256,12 +1264,12 @@ begin
           sFrom := av.sMusicFolder + tvwTree.GetFullNodePath(nFrom);
           sTo   := av.sMusicFolder + '\' + nFrom.Text;
         end;
-      ICO_MUSIC_FOLDER_CLOSE : //Folderに
+      ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_FOLDER_CLOSE_SYM : //Folderに
         begin
           sFrom := av.sMusicFolder + tvwTree.GetFullNodePath(nFrom);
           sTo   := av.sMusicFolder + tvwTree.GetFullNodePath(nTo) + '\' + nFrom.Text;
         end;
-      ICO_MUSIC_ALBUM_CLOSE : //Albumに
+      ICO_MUSIC_ALBUM_CLOSE, ICO_MUSIC_ALBUM_CLOSE_SYM : //Albumに
         Exit;
     end;
     if sFrom <> sTo then
@@ -1449,8 +1457,11 @@ begin
     if bMedia then
     begin
       n := tvwTree.Selected;
-      n.ImageIndex    := ICO_MUSIC_ALBUM_CLOSE;
-      n.SelectedIndex := ICO_MUSIC_ALBUM_OPEN;
+      if n.ImageIndex = ICO_MUSIC_ALBUM_CLOSE then
+      begin
+        n.ImageIndex    := ICO_MUSIC_ALBUM_CLOSE;
+        n.SelectedIndex := ICO_MUSIC_ALBUM_OPEN;
+      end;
     end;
   finally
     lvwList.SelectFirstItem;
@@ -1461,8 +1472,8 @@ end;
 procedure TfrmMain._ListMusicFiles;
 begin
   Case tvwTree.Selected.ImageIndex of
-    ICO_MUSIC_FOLDER_CLOSE : _ListMediaFiles;
-    ICO_MUSIC_ALBUM_CLOSE  : _ListMediaFiles;
+    ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_FOLDER_CLOSE_SYM : _ListMediaFiles;
+    ICO_MUSIC_ALBUM_CLOSE, ICO_MUSIC_ALBUM_CLOSE_SYM   : _ListMediaFiles;
     ICO_PLAYLIST_FILE      : _ListPlaylistFiles;
   end;
 end;
@@ -1666,16 +1677,16 @@ begin
         add := tvwTree.Items.AddChild(node, sr.Name);
         if ut_IsAlbum(path + '\' + sr.Name) then
         begin
-//          if sr.Attr and faSymLink <> 0 then
-//          begin
-//            add.ImageIndex    := ICO_MUSIC_ALBUM_CLOSE_SYM;
-//            add.SelectedIndex := ICO_MUSIC_ALBUM_OPEN_SYM;
-//          end
-//          else
-//          begin
+          if sr.Attr and faSymLink <> 0 then
+          begin
+            add.ImageIndex    := ICO_MUSIC_ALBUM_CLOSE_SYM;
+            add.SelectedIndex := ICO_MUSIC_ALBUM_OPEN_SYM;
+          end
+          else
+          begin
             add.ImageIndex    := ICO_MUSIC_ALBUM_CLOSE;
             add.SelectedIndex := ICO_MUSIC_ALBUM_OPEN;
-//          end;
+          end;
         end
         else
         begin

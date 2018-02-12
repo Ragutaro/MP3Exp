@@ -982,9 +982,9 @@ end;
 procedure TfrmEditTag._LoadTags;
 begin
   Case frmMain.tvwTree.Selected.ImageIndex of
-    ICO_MUSIC_FOLDER_CLOSE: _LoadTagsFiles;
-    ICO_MUSIC_ALBUM_CLOSE : _LoadTagsFiles;
-    ICO_PLAYLIST_FILE     : _LoadTagsPlaylist;
+    ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_FOLDER_CLOSE_SYM : _LoadTagsFiles;
+    ICO_MUSIC_ALBUM_CLOSE, ICO_MUSIC_ALBUM_CLOSE_SYM   : _LoadTagsFiles;
+    ICO_PLAYLIST_FILE                                  : _LoadTagsPlaylist;
   end;
 end;
 
