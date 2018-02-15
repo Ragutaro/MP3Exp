@@ -755,7 +755,7 @@ const
 var
   sl : TStringList;
   n : TTreeNode;
-  s, sMsg : String;
+  s : String;
 begin
   n := tvwTree.Selected;
   if (n = nil) or (n.ImageIndex = 0) then
@@ -766,7 +766,7 @@ begin
       begin
         s := av.sMusicFolder + tvwTree.GetFullNodePath(n);
         //削除処理
-        if MessageDlg(sMsg, '', mtConfirmation, [mbYes, mbNo]) = mrYes then
+        if MessageDlg(C_DelFolder, '', mtConfirmation, [mbYes, mbNo]) = mrYes then
         begin
           DeleteFolder(s);
           n.Delete;
@@ -782,7 +782,6 @@ begin
             sl.Add('chcp 65001');
             sl.Add('@echo on');
             sl.Add(Format('rmdir /S /Q "%s"', [av.sMusicFolder + tvwTree.GetFullNodePath(n)]));
-            sl.Add('pause');
             sl.SaveToFile('DeleteSymLink.bat', TEncoding.UTF8);
           finally
             sl.Free;
@@ -1299,6 +1298,7 @@ begin
       nTo.AlphaSort(True);
     end;
   end
+  //リストビューからのドロップ
   else if Source is THideListView then
   begin
     nTo := tvwTree.DropTarget;
@@ -1477,15 +1477,31 @@ begin
     if bMedia then
     begin
       n := tvwTree.Selected;
-      if n.ImageIndex = ICO_MUSIC_ALBUM_CLOSE then
+      Case n.ImageIndex of
+        ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_ALBUM_CLOSE :
+          begin
+            n.ImageIndex    := ICO_MUSIC_ALBUM_CLOSE;
+            n.SelectedIndex := ICO_MUSIC_ALBUM_OPEN;
+          end;
+        ICO_MUSIC_FOLDER_CLOSE_SYM, ICO_MUSIC_ALBUM_CLOSE_SYM :
+          begin
+            n.ImageIndex    := ICO_MUSIC_ALBUM_CLOSE_SYM;
+            n.SelectedIndex := ICO_MUSIC_ALBUM_OPEN_SYM;
+          end;
+      end;
+    end
+    else
+    //ファイルが存在しない場合は、フォルダアイコンに変更
+    begin
+      n := tvwTree.Selected;
+      if ut_IsSymbolicLink(sRootDir) then
       begin
-        n.ImageIndex    := ICO_MUSIC_ALBUM_CLOSE;
-        n.SelectedIndex := ICO_MUSIC_ALBUM_OPEN;
-      end
-      else
+      	n.ImageIndex    := ICO_MUSIC_FOLDER_CLOSE_SYM;
+        n.SelectedIndex := ICO_MUSIC_FOLDER_OPEN_SYM;
+      end else
       begin
-        n.ImageIndex    := ICO_MUSIC_ALBUM_CLOSE_SYM;
-        n.SelectedIndex := ICO_MUSIC_ALBUM_OPEN_SYM;
+      	n.ImageIndex    := ICO_MUSIC_FOLDER_CLOSE;
+        n.SelectedIndex := ICO_MUSIC_FOLDER_OPEN;
       end;
     end;
   finally
@@ -1499,7 +1515,7 @@ begin
   Case tvwTree.Selected.ImageIndex of
     ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_FOLDER_CLOSE_SYM : _ListMediaFiles;
     ICO_MUSIC_ALBUM_CLOSE, ICO_MUSIC_ALBUM_CLOSE_SYM   : _ListMediaFiles;
-    ICO_PLAYLIST_FILE      : _ListPlaylistFiles;
+    ICO_PLAYLIST_FILE                                  : _ListPlaylistFiles;
   end;
 end;
 
@@ -1702,7 +1718,7 @@ begin
         add := tvwTree.Items.AddChild(node, sr.Name);
         if ut_IsAlbum(path + '\' + sr.Name) then
         begin
-          if sr.Attr and faSymLink <> 0 then
+          if ut_IsSymbolicLink(path + '\' + sr.Name) then
           begin
             add.ImageIndex    := ICO_MUSIC_ALBUM_CLOSE_SYM;
             add.SelectedIndex := ICO_MUSIC_ALBUM_OPEN_SYM;

@@ -223,7 +223,7 @@ var
 begin
   if cmbData4.Text = '<連番>' then
   begin
-    iCnt := 1;
+    iCnt := StrToIntDefEx(cmbData4.Text, 1);
     for i := 0 to lvwList.Items.Count-1 do
     begin
       item := TlvwList(lvwList.Items[i]);
