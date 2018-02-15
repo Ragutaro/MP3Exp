@@ -600,7 +600,15 @@ begin
         popLvwAdd2iTunes.Enabled    := False;
         popLvwDelete.Enabled        := False;
       end;
-    ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_FOLDER_CLOSE_SYM :
+    ICO_MUSIC_FOLDER_CLOSE :
+      begin
+        popLvwShowAlbumArt.Enabled  := False;
+        popLvwRename.Enabled        := False;
+        popLvwAddToPlaylist.Enabled := False;
+        popLvwAdd2iTunes.Enabled    := False;
+        popLvwDelete.Enabled        := False;
+      end;
+    ICO_MUSIC_FOLDER_CLOSE_SYM :
       begin
         popLvwShowAlbumArt.Enabled  := False;
         popLvwRename.Enabled        := False;
@@ -742,11 +750,11 @@ const
   C_DelFolder  = 'フォルダを削除します。よろしいですか?';
   C_DelList    = 'プレイリストを削除します。よろしいですか？';
   C_DelSymLink = 'シンボリックリンクを削除しようとしています。' + #13#10 +
-                   'シンボリックリンクを削除しても、音楽ファイルは削除されません。' + #13#10 +
-                   'このシンボリックリンクを削除しますか?';
+                 'シンボリックリンクを削除しても、音楽ファイルは削除されません。' + #13#10 +
+                 'このシンボリックリンクを削除しますか?';
 var
+  sl : TStringList;
   n : TTreeNode;
-  sr : TSearchRec;
   s, sMsg : String;
 begin
   n := tvwTree.Selected;
@@ -757,16 +765,6 @@ begin
     ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_ALBUM_CLOSE :
       begin
         s := av.sMusicFolder + tvwTree.GetFullNodePath(n);
-        //シンボリックリンクかを判断する
-        FindFirst(s, faAnyFile, sr);
-        try
-          if (sr.Attr and faSymLink <> 0) then
-            sMsg := C_DelSymLink
-          else
-            sMsg := C_DelFolder;
-        finally
-          FindClose(sr);
-        end;
         //削除処理
         if MessageDlg(sMsg, '', mtConfirmation, [mbYes, mbNo]) = mrYes then
         begin
@@ -778,7 +776,18 @@ begin
       begin
         if MessageDlg(C_DelSymLink, '', mtConfirmation, [mbYes, mbNo]) = mrYes then
         begin
-          DeleteFolder(s);
+          sl := TStringList.Create;
+          try
+            sl.Add('chcp');
+            sl.Add('chcp 65001');
+            sl.Add('@echo on');
+            sl.Add(Format('rmdir /S /Q "%s"', [av.sMusicFolder + tvwTree.GetFullNodePath(n)]));
+            sl.Add('pause');
+            sl.SaveToFile('DeleteSymLink.bat', TEncoding.UTF8);
+          finally
+            sl.Free;
+          end;
+          ShellExecuteSimple('DeleteSymLink.bat');
           n.Delete;
         end;
       end;
@@ -978,6 +987,17 @@ begin
         popTvwNewPlaylist.Enabled   := False;
       end;
     ICO_MUSIC_ALBUM_CLOSE :
+      begin
+        popTvwCreateFolder.Enabled  := False;
+        popTvwCreateAlbum.Enabled   := False;
+        popTvwNewPlaylist.Enabled   := False;
+        popTvwReload.Enabled        := False;
+      end;
+    ICO_MUSIC_FOLDER_CLOSE_SYM :
+      begin
+        popTvwNewPlaylist.Enabled   := False;
+      end;
+    ICO_MUSIC_ALBUM_CLOSE_SYM :
       begin
         popTvwCreateFolder.Enabled  := False;
         popTvwCreateAlbum.Enabled   := False;
@@ -1461,6 +1481,11 @@ begin
       begin
         n.ImageIndex    := ICO_MUSIC_ALBUM_CLOSE;
         n.SelectedIndex := ICO_MUSIC_ALBUM_OPEN;
+      end
+      else
+      begin
+        n.ImageIndex    := ICO_MUSIC_ALBUM_CLOSE_SYM;
+        n.SelectedIndex := ICO_MUSIC_ALBUM_OPEN_SYM;
       end;
     end;
   finally

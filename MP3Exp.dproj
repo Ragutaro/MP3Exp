@@ -66,7 +66,7 @@
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <SanitizedProjectName>MP3Exp</SanitizedProjectName>
-        <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
+        <DCC_DcuOutput>.\$(Platform)\$(Config)\Dcu</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
         <DCC_N>false</DCC_N>
@@ -128,8 +128,8 @@
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <Icon_MainIcon>Images\MP3Exp.ico</Icon_MainIcon>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Build>946</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.946;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Build>958</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=;FileVersion=1.0.0.958;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductName=;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppEnableHighDPI>true</AppEnableHighDPI>
     </PropertyGroup>
@@ -178,10 +178,10 @@
                     <Source Name="MainSource">MP3Exp.dpr</Source>
                 </Source>
                 <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclfmxstd230.bpl">Embarcadero FMX 標準コンポーネント</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclBindCompFireDAC230.bpl">LiveBinding 式コンポーネント FireDac</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclbindcomp230.bpl">Embarcadero LiveBinding コンポーネント</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclbindcompvcl230.bpl">Embarcadero LiveBinding コンポーネント VCL</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclfmxstd230.bpl">Embarcadero FMX 標準コンポーネント</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclbindcompfmx230.bpl">Embarcadero LiveBinding コンポーネント FireMonkey</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclbindcompdbx230.bpl">LiveBinding 式コンポーネント DbExpress</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k230.bpl">Microsoft Office 2000 オートメーション サーバー ラッパー コンポーネントのサンプル</Excluded_Packages>
