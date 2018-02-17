@@ -970,6 +970,7 @@ begin
   popTvwAdd2iTunes.Enabled          := True;
   popTvwReload.Enabled              := True;
   popTvwDeletePRIVTags.Enabled      := True;
+  popTvwMakeSSymLink.Enabled        := True;
   popTvwOpenExplorer.Enabled        := True;
   popTvwDelete.Enabled              := True;
   Case tvwTree.Selected.ImageIndex of
@@ -991,10 +992,12 @@ begin
         popTvwCreateAlbum.Enabled   := False;
         popTvwNewPlaylist.Enabled   := False;
         popTvwReload.Enabled        := False;
+        popTvwMakeSSymLink.Enabled  := False;
       end;
     ICO_MUSIC_FOLDER_CLOSE_SYM :
       begin
         popTvwNewPlaylist.Enabled   := False;
+        popTvwMakeSSymLink.Enabled  := False;
       end;
     ICO_MUSIC_ALBUM_CLOSE_SYM :
       begin
@@ -1002,6 +1005,7 @@ begin
         popTvwCreateAlbum.Enabled   := False;
         popTvwNewPlaylist.Enabled   := False;
         popTvwReload.Enabled        := False;
+        popTvwMakeSSymLink.Enabled  := False;
       end;
     ICO_PLAYLIST_ROOT :  //Playlist Root
       begin
@@ -1013,6 +1017,7 @@ begin
         popTvwAdd2iTunes.Enabled    := False;
         popTvwReload.Enabled        := False;
         popTvwDeletePRIVTags.Enabled:= False;
+        popTvwMakeSSymLink.Enabled  := False;
         popTvwOpenExplorer.Enabled  := False;
         popTvwDelete.Enabled        := False;
       end;
@@ -1026,6 +1031,7 @@ begin
         popTvwAdd2iTunes.Enabled    := False;
         popTvwReload.Enabled        := False;
         popTvwDeletePRIVTags.Enabled:= False;
+        popTvwMakeSSymLink.Enabled  := False;
         popTvwOpenExplorer.Enabled  := False;
       end;
   end;
@@ -1063,7 +1069,7 @@ begin
   if (sNewName <> '') and (sNewName <> n.Text) then
   begin
     Case tvwTree.Selected.ImageIndex of
-      ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_ALBUM_CLOSE : //Folder
+      ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_ALBUM_CLOSE, ICO_MUSIC_FOLDER_CLOSE_SYM, ICO_MUSIC_ALBUM_CLOSE_SYM : //Folder
         begin
           sOldPath := av.sMusicFolder + tvwTree.GetFullNodePath(n);
           sNewPath := av.sMusicFolder + tvwTree.GetFullNodePath(n.Parent) + '\' + sNewName;
@@ -1253,11 +1259,10 @@ begin
 
     if cdsSelected in State then
     begin
-    	Brush.Color := clHighlight;
+    	Brush.Color := av.cTotal;
       Font.Color  := clHighlightText;
     end
-    else
-    if cdsHot in State then
+    else if cdsHot in State then
     begin
       Brush.Color := $00FFF3E5;
       Font.Color  := clWindowText;

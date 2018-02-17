@@ -21,6 +21,7 @@ uses
   procedure ut_DrawListItems(Sender: TCustomListView; Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
   function  ut_IsSymbolicLink(const sFolder: String): Boolean;
 
+
 const
   ICO_MUSIC_ROOT            = 0;
   ICO_MUSIC_FOLDER_CLOSE    = 1;
