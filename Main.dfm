@@ -372,6 +372,8 @@ object frmMain: TfrmMain
             Width = 287
             Height = 69
             Align = alLeft
+            ExplicitLeft = 6
+            ExplicitTop = 2
           end
         end
       end
@@ -383,14 +385,12 @@ object frmMain: TfrmMain
         Align = alLeft
         BevelOuter = bvNone
         TabOrder = 2
-        ExplicitHeight = 216
         object tvwTree: THideTreeView
           Left = 0
           Top = 0
           Width = 169
-          Height = 130
-          Align = alTop
-          Anchors = [akLeft, akTop, akRight, akBottom]
+          Height = 124
+          Align = alClient
           DragMode = dmAutomatic
           HideSelection = False
           HotTrack = True
@@ -412,21 +412,24 @@ object frmMain: TfrmMain
             000000000001054D0075007300690063002E0000000D0000000D000000FFFFFF
             FFFFFFFFFF000000000000000000000000010850006C00610079006C00690073
             007400}
+          ExplicitHeight = 132
         end
         object Panel1: TPanel
           Left = 0
-          Top = 132
+          Top = 124
           Width = 169
-          Height = 86
+          Height = 94
           Align = alBottom
           BevelOuter = bvNone
+          Color = clGray
+          ParentBackground = False
           TabOrder = 1
           DesignSize = (
             169
-            86)
+            94)
           object imgCover: TImage
-            Left = 0
-            Top = 2
+            Left = 10
+            Top = 6
             Width = 90
             Height = 80
             Cursor = crHandPoint
@@ -434,15 +437,15 @@ object frmMain: TfrmMain
             OnClick = imgCoverClick
           end
           object lblTitle: TLabel
-            Left = 96
-            Top = 6
-            Width = 63
+            Left = 111
+            Top = 2
+            Width = 52
             Height = 18
             Anchors = [akLeft, akRight, akBottom]
             AutoSize = False
             Caption = '<Title>'
             Font.Charset = SHIFTJIS_CHARSET
-            Font.Color = clWindowText
+            Font.Color = clWhite
             Font.Height = -12
             Font.Name = #12513#12452#12522#12458
             Font.Style = [fsBold]
@@ -451,50 +454,66 @@ object frmMain: TfrmMain
             Transparent = True
           end
           object lblArtist: TLabel
-            Left = 96
-            Top = 24
-            Width = 63
+            Left = 111
+            Top = 19
+            Width = 52
             Height = 18
             Anchors = [akLeft, akRight, akBottom]
             AutoSize = False
             Caption = '<Artist>'
             Font.Charset = SHIFTJIS_CHARSET
-            Font.Color = clWindowText
+            Font.Color = clWhite
             Font.Height = -12
             Font.Name = #12513#12452#12522#12458
-            Font.Style = []
+            Font.Style = [fsBold]
             ParentFont = False
             ShowAccelChar = False
           end
           object lblLyricist: TLabel
-            Left = 96
-            Top = 44
-            Width = 63
+            Left = 111
+            Top = 54
+            Width = 52
             Height = 18
             Anchors = [akLeft, akRight, akBottom]
             AutoSize = False
             Caption = '<Lyrics>'
             Font.Charset = SHIFTJIS_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
+            Font.Color = clWhite
+            Font.Height = -12
             Font.Name = #12513#12452#12522#12458
-            Font.Style = []
+            Font.Style = [fsBold]
             ParentFont = False
             ShowAccelChar = False
           end
           object lblComposer: TLabel
-            Left = 96
-            Top = 60
-            Width = 63
+            Left = 111
+            Top = 72
+            Width = 52
             Height = 18
             Anchors = [akLeft, akRight, akBottom]
             AutoSize = False
             Caption = '<Composer>'
             Font.Charset = SHIFTJIS_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -11
+            Font.Color = clWhite
+            Font.Height = -12
             Font.Name = #12513#12452#12522#12458
-            Font.Style = []
+            Font.Style = [fsBold]
+            ParentFont = False
+            ShowAccelChar = False
+          end
+          object lblAlbumYear: TLabel
+            Left = 111
+            Top = 37
+            Width = 52
+            Height = 18
+            Anchors = [akLeft, akRight, akBottom]
+            AutoSize = False
+            Caption = '<AlbumYear>'
+            Font.Charset = SHIFTJIS_CHARSET
+            Font.Color = clWhite
+            Font.Height = -12
+            Font.Name = #12513#12452#12522#12458
+            Font.Style = [fsBold]
             ParentFont = False
             ShowAccelChar = False
           end
@@ -1842,8 +1861,8 @@ object frmMain: TfrmMain
     DrawingStyle = dsTransparent
     Height = 80
     Width = 90
-    Left = 200
-    Top = 104
+    Left = 234
+    Top = 96
     Bitmap = {
       494C01010200050004005A005000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       00000000000036000000280000006801000050000000010020000000000000C2
@@ -5644,7 +5663,7 @@ object frmMain: TfrmMain
   object popLvw: TSpTBXPopupMenu
     Images = imgTreeView
     OnPopup = popLvwPopup
-    Left = 201
+    Left = 233
     Top = 158
     object popLvwShowAlbumArt: TSpTBXItem
       Caption = #12450#12523#12496#12512#12450#12540#12488#12434#34920#31034'...'

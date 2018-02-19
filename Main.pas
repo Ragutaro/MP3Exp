@@ -96,6 +96,7 @@ type
     popTvwAdd2iTunes: TSpTBXItem;
     popLvwAdd2iTunes: TSpTBXItem;
     popTvwMakeSSymLink: TSpTBXItem;
+    lblAlbumYear: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure lvwListDblClick(Sender: TObject);
@@ -320,6 +321,7 @@ begin
     Pen.Color := $00F3F3F3;
     Rectangle(0, 0, imgLyrics.Width, imgLyrics.Height);
   end;
+  Panel1.Color := clGray;
 end;
 
 procedure TfrmMain.imgCoverClick(Sender: TObject);
@@ -1241,11 +1243,14 @@ end;
 
 procedure TfrmMain.tvwTreeCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
+var
+  bIsPlay : Boolean;
 begin
   if Node.Parent = nil then
     Exit;
 
   DefaultDraw := True;
+  bIsPlay := False;
 
   with Sender.Canvas do
   begin
@@ -1253,16 +1258,18 @@ begin
     //現在再生中のフォルダ
     if SameText(av.sMusicFolder + tvwTree.GetFullNodePath(Node), av.sCurrentDir) then
     begin
-      Font.Color := clRed;
-  	  Font.Style := [fsBold];
+      bIsPlay     := True;
+    	Brush.Color := av.cNowPlay;
+      Font.Color  := av.cNowPlayFont;
+  	  Font.Style  := [fsBold];
     end;
 
     if cdsSelected in State then
     begin
     	Brush.Color := av.cTotal;
-      Font.Color  := clHighlightText;
+      Font.Color  := av.cTotalFont;
     end
-    else if cdsHot in State then
+    else if (cdsHot in State) and (Not bIsPlay) then
     begin
       Brush.Color := $00FFF3E5;
       Font.Color  := clWindowText;
@@ -1585,6 +1592,7 @@ begin
       end;
       lblTitle.Caption    := StrDef(t.GetTag(TAG_TITLE),  '<No Title>');
       lblArtist.Caption   := StrDef(t.GetTag(TAG_ARTIST), '<No Artist>');
+      lblAlbumYear.Caption := StrDef(t.GetTag(TAG_ALBUM), '<No Album>');;
       lblLyricist.Caption := '作詞:' + StrDef(t.GetTag(TAG_LYRICIST), '<No Data>');
       lblComposer.Caption := '作曲:' + StrDef(t.GetTag(TAG_COMPOSER), '<No Data>');
       _ShowLyrics(t.GetTag(TAG_LYRICS));
@@ -1649,17 +1657,14 @@ begin
   end;
   wmp.settings.setMode('loop', True);
   imgJacket.Draw(imgCover.Canvas, 0, 0, 0);
-  lblTitle.Caption := '';
-  lblArtist.Caption := '';
-  lblLyricist.Caption := '';
-  lblComposer.Caption := '';
-  av.sPlaylistDir     := ExtractFilePath(Application.ExeName) + 'Playlist';
-  ScrollBox1.Color    := $00F3F3F3;
+  lblTitle.Caption      := '';
+  lblArtist.Caption     := '';
+  lblAlbumYear.Caption  := '';
+  lblLyricist.Caption   := '';
+  lblComposer.Caption   := '';
+  av.sPlaylistDir       := ExtractFilePath(Application.ExeName) + 'Playlist';
+  ScrollBox1.Color      := $00F3F3F3;
   _SetColors;
-//  av.cTotal           := GetTitlebarColor;
-//  av.cTotalFont       := SetTitlebarCaptionColor(av.cTotal);
-//  av.cNowPlay         := GetOppositeColor(av.cTotal);
-//  av.cNowPlayFont     := SetTitlebarCaptionColor(av.cNowPlay);
 end;
 
 procedure TfrmMain._PlayFromPlaylist;
