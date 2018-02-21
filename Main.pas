@@ -75,11 +75,6 @@ type
     DropFileTarget: TDropFileTarget;
     popTvwCreateFolder: TSpTBXItem;
     Panel1: TPanel;
-    imgCover: TImage;
-    lblTitle: TLabel;
-    lblArtist: TLabel;
-    lblLyricist: TLabel;
-    lblComposer: TLabel;
     SpTBXSubmenuItem1: TSpTBXSubmenuItem;
     SpTBXSeparatorItem5: TSpTBXSeparatorItem;
     popTvwPlayFolder_Shuffle: TSpTBXItem;
@@ -96,7 +91,13 @@ type
     popTvwAdd2iTunes: TSpTBXItem;
     popLvwAdd2iTunes: TSpTBXItem;
     popTvwMakeSSymLink: TSpTBXItem;
+    imgBackground: TImage;
+    imgCover: TImage;
     lblAlbumYear: TLabel;
+    lblArtist: TLabel;
+    lblComposer: TLabel;
+    lblLyricist: TLabel;
+    lblTitle: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure lvwListDblClick(Sender: TObject);
@@ -1621,6 +1622,8 @@ begin
     Brush.Color := clBlack;
     FillRect(imgCover.ClientRect);
   end;
+  imgCover.Canvas.Brush.Color := clGray;
+  imgCover.Canvas.FillRect(imgCover.ClientRect);
   SetStretchBltMode(imgCover.Canvas.Handle, HALFTONE);
   StretchBlt(imgCover.Canvas.Handle, 11, 1, 77, 78,
              bmp.Canvas.Handle, 0, 0, bmp.Width, bmp.Height,
@@ -1656,6 +1659,8 @@ begin
     ini.Free;
   end;
   wmp.settings.setMode('loop', True);
+  imgCover.Canvas.Brush.Color := clGray;
+  imgCover.Canvas.FillRect(imgCover.ClientRect);
   imgJacket.Draw(imgCover.Canvas, 0, 0, 0);
   lblTitle.Caption      := '';
   lblArtist.Caption     := '';
