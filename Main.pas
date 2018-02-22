@@ -192,7 +192,7 @@ type
     sMusicFolder, sCurrentSong, sCurrentDir : String;
     sValidExtentions, sPlaylistDir : String;
     sMp3Gain : String;
-    cNowPlay, cNowPlayFont, cTotal, cTotalFont : TColor;
+    cNowPlay, cNowPlayFont, cTotal, cTotalFont, cAlbumArt : TColor;
   end;
 
 var
@@ -322,7 +322,7 @@ begin
     Pen.Color := $00F3F3F3;
     Rectangle(0, 0, imgLyrics.Width, imgLyrics.Height);
   end;
-  Panel1.Color := clGray;
+  Panel1.Color := av.cAlbumArt;
 end;
 
 procedure TfrmMain.imgCoverClick(Sender: TObject);
@@ -1578,6 +1578,7 @@ var
   t : TTags;
   bmp : TBitmap;
   i : Integer;
+  s : String;
 begin
   t := TTags.Create;
   bmp := TBitmap.Create;
@@ -1594,6 +1595,9 @@ begin
       lblTitle.Caption    := StrDef(t.GetTag(TAG_TITLE),  '<No Title>');
       lblArtist.Caption   := StrDef(t.GetTag(TAG_ARTIST), '<No Artist>');
       lblAlbumYear.Caption := StrDef(t.GetTag(TAG_ALBUM), '<No Album>');;
+      s := t.GetTag(TAG_YEAR);
+      if s <> '' then
+        lblAlbumYear.Caption := Format('%s (%s)', [lblAlbumYear.Caption, s]);
       lblLyricist.Caption := '作詞:' + StrDef(t.GetTag(TAG_LYRICIST), '<No Data>');
       lblComposer.Caption := '作曲:' + StrDef(t.GetTag(TAG_COMPOSER), '<No Data>');
       _ShowLyrics(t.GetTag(TAG_LYRICS));
@@ -1615,6 +1619,37 @@ begin
 end;
 
 procedure TfrmMain._LoadCoverArt(bmp: TBitmap);
+  function in_CreateColor(bmpSrc: TBitmap): TColor;
+  var
+    r, g, b : Cardinal;
+    c : TColor;
+  begin
+    //左上
+    c := bmpSrc.Canvas.Pixels[20, 20];
+    r := GetRValue(c);
+    g := GetGValue(c);
+    b := GetBValue(c);
+    //右上
+    c := bmpSrc.Canvas.Pixels[60, 20];
+    r := (r + GetRValue(c)) div 2;
+    g := (g + GetGValue(c)) div 2;
+    b := (b + GetBValue(c)) div 2;
+    //左下
+    c := bmpSrc.Canvas.Pixels[20, 60];
+    r := (r + GetRValue(c)) div 2;
+    g := (g + GetGValue(c)) div 2;
+    b := (b + GetBValue(c)) div 2;
+    //右下
+    c := bmpSrc.Canvas.Pixels[60, 60];
+    r := (r + GetRValue(c)) div 2;
+    g := (g + GetGValue(c)) div 2;
+    b := (b + GetBValue(c)) div 2;
+    Result := RGB(r, g, b);
+  end;
+
+var
+  c : TColor;
+  bmpTmp : TBitmap;
 begin
   with imgCover.Canvas do
   begin
@@ -1622,16 +1657,41 @@ begin
     Brush.Color := clBlack;
     FillRect(imgCover.ClientRect);
   end;
-  imgCover.Canvas.Brush.Color := clGray;
-  imgCover.Canvas.FillRect(imgCover.ClientRect);
-  SetStretchBltMode(imgCover.Canvas.Handle, HALFTONE);
-  StretchBlt(imgCover.Canvas.Handle, 11, 1, 77, 78,
-             bmp.Canvas.Handle, 0, 0, bmp.Width, bmp.Height,
-             SRCCOPY);
-  if bmp.Width > 0 then
-    imgJacket.Draw(imgCover.Canvas, 0, 0, 1)
-  else
-    imgJacket.Draw(imgCover.Canvas, 0, 0, 0);
+
+  bmpTmp := TBitmap.Create;
+  try
+    bmpTmp.SetSize(77, 78);
+    SetStretchBltMode(bmpTmp.Canvas.Handle, HALFTONE);
+    StretchBlt(bmpTmp.Canvas.Handle, 0, 0, 77, 78,
+              bmp.Canvas.Handle,     0, 0, bmp.Width, bmp.Height,
+              SRCCOPY);
+
+    c := in_CreateColor(bmpTmp);
+    av.cAlbumArt := GetOppositeColor(c);
+    c := SetTitlebarCaptionColor(av.cAlbumArt);
+    if c = clBlack then
+      c := $00323232
+    else
+      c := $00F3F3F3;
+
+    Panel1.Color := av.cAlbumArt;
+    lblTitle.Font.Color := c;
+    lblArtist.Font.Color := c;
+    lblAlbumYear.Font.Color := c;
+    lblLyricist.Font.Color := c;
+    lblComposer.Font.Color := c;
+    imgCover.Canvas.Brush.Color := av.cAlbumArt;
+    imgCover.Canvas.FillRect(imgCover.ClientRect);
+    BitBlt(imgCover.Canvas.Handle, 11, 1, 77, 78,
+           bmpTmp.Canvas.Handle, 0, 0, SRCCOPY);
+
+    if bmp.Width > 0 then
+      imgJacket.Draw(imgCover.Canvas, 0, 0, 1)
+    else
+      imgJacket.Draw(imgCover.Canvas, 0, 0, 0);
+  finally
+    bmpTmp.Free;
+  end;
 end;
 
 procedure TfrmMain._LoadSettings;
@@ -1653,13 +1713,14 @@ begin
     av.sMusicFolder         := ini.ReadString(Self.Name, 'MusicFolder', 'D:\Symlink\iTunes Music\Trees');
     av.sValidExtentions     := ini.ReadString(Self.Name, 'ValidExtentions', '.mp3.m4a.m4b.mp4.aac.m4p.wma.wmv.flac.fla.mpc.ape.ogg.oga.wav.wv');
     av.sMp3Gain             := ini.ReadString(Self.Name, 'MP3Gain', 'C:\!MyData\Programs\MP3Gain\MP3GainGUI.exe');
-    Self.Font.Name    := ini.ReadString('Font', 'FontName', '游ゴシック Medium');
-    Self.Font.Size    := ini.ReadInteger('Font', 'FontSize', 10);
+    Self.Font.Name          := ini.ReadString('Font', 'FontName', '游ゴシック Medium');
+    Self.Font.Size          := ini.ReadInteger('Font', 'FontSize', 10);
+    av.cAlbumArt            := ini.ReadInteger(Self.Name, 'AlbumArtBkColor', clGray);
   finally
     ini.Free;
   end;
   wmp.settings.setMode('loop', True);
-  imgCover.Canvas.Brush.Color := clGray;
+  imgCover.Canvas.Brush.Color := av.cAlbumArt;
   imgCover.Canvas.FillRect(imgCover.ClientRect);
   imgJacket.Draw(imgCover.Canvas, 0, 0, 0);
   lblTitle.Caption      := '';
