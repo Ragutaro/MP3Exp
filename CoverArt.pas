@@ -21,6 +21,8 @@ type
     lblInfo: TLabel;
     popCover: TSpTBXPopupMenu;
     popCoverExport: TSpTBXItem;
+    popView: TSpTBXPopupMenu;
+    popView_Export: TSpTBXItem;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure lvwListSelectItem(Sender: TObject; Item: TListItem;
@@ -31,6 +33,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure lvwListCustomDrawItem(Sender: TCustomListView; Item: TListItem;
       State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure popView_ExportClick(Sender: TObject);
   private
     { Private 宣言 }
     procedure _LoadSettings;
@@ -106,6 +109,8 @@ procedure TfrmCoverArt.lvwListSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 begin
   imgView.Picture.Assign(TCover(Item).bmpCoverArt);
+  imgView.Hint := TCover(Item).sMediaFilename;
+  imgView.Tag  := TCover(Item).iAPICIndex;
   lblInfo.Caption := Format('%s / %s / %s',
                             [StrDef(TCover(Item).sPictureType, '<no picture type>'),
                              TCover(Item).sFilesize,
@@ -123,6 +128,11 @@ begin
     idx := TCover(lvwList.Selected).iAPICIndex;
     ut_ExportAPIC(TCover(lvwList.Selected).sMediaFilename, idx);
   end;
+end;
+
+procedure TfrmCoverArt.popView_ExportClick(Sender: TObject);
+begin
+  ut_ExportAPIC(imgView.Hint, imgView.Tag);
 end;
 
 procedure TfrmCoverArt._DestroyListItems;
@@ -171,11 +181,14 @@ begin
           bmpList.Free;
         end;
       end;
-      //カバーを表示する
-      imgView.Picture.Assign(TCover(lvwList.Items[0]).bmpCoverArt);
-      //カバーを表示する
-      imgView.Picture.Assign(TCover(lvwList.Items[0]).bmpCoverArt);
       item := TCover(lvwList.Items[0]);
+      //カバーを表示する
+      imgView.Picture.Assign(item.bmpCoverArt);// (lvwList.Items[0]).bmpCoverArt);
+      //カバーを表示する
+      imgView.Picture.Assign(item.bmpCoverArt);// TCover(lvwList.Items[0]).bmpCoverArt);
+      imgView.Hint := item.sMediaFilename;// TCover(lvwList.Items[0]).sMediaFilename;
+      imgView.Tag  := item.iAPICIndex;// TCover(lvwList.Items[0]).iAPICIndex;
+//      item := TCover(lvwList.Items[0]);
       lblInfo.Caption := Format('%s / %d x %d / %s',
                                 [StrDef(item.sPictureType, '<no picture type>'),
                                  item.bmpCoverArt.width,

@@ -403,6 +403,7 @@ object frmMain: TfrmMain
           TabOrder = 0
           OnClick = tvwTreeClick
           OnCustomDrawItem = tvwTreeCustomDrawItem
+          OnDblClick = tvwTreeDblClick
           OnDragDrop = tvwTreeDragDrop
           OnDragOver = tvwTreeDragOver
           OnKeyDown = tvwTreeKeyDown

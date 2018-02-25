@@ -86,6 +86,7 @@ type
     popListExportAPIC: TSpTBXItem;
     lvwCover: THideListView;
     btnRefreshCoverArt: TButton;
+    imgLyric: TImageList;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure cmbData2Change(Sender: TObject);

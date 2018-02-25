@@ -3,8 +3,8 @@ object frmCoverArt: TfrmCoverArt
   Top = 474
   BorderIcons = [biSystemMenu]
   Caption = 'Album Art List'
-  ClientHeight = 121
-  ClientWidth = 195
+  ClientHeight = 197
+  ClientWidth = 311
   Color = clBtnFace
   Font.Charset = SHIFTJIS_CHARSET
   Font.Color = clWindowText
@@ -24,7 +24,7 @@ object frmCoverArt: TfrmCoverArt
     Left = 0
     Top = 0
     Width = 81
-    Height = 121
+    Height = 197
     Align = alLeft
     Columns = <>
     HideSelection = False
@@ -47,38 +47,38 @@ object frmCoverArt: TfrmCoverArt
     Left = 81
     Top = 0
     Width = 4
-    Height = 121
+    Height = 197
     Cursor = crSizeWE
   end
   object SpTBXPanel1: TSpTBXPanel
     Left = 85
     Top = 0
-    Width = 110
-    Height = 121
+    Width = 226
+    Height = 197
     Caption = 'SpTBXPanel1'
     Align = alClient
     TabOrder = 2
     Borders = False
     TBXStyleBackground = True
     DesignSize = (
-      110
-      121)
+      226
+      197)
     object imgView: TImage
       Left = 0
       Top = 0
-      Width = 110
-      Height = 92
+      Width = 226
+      Height = 168
       Align = alTop
       Anchors = [akLeft, akTop, akRight, akBottom]
       Center = True
-      PopupMenu = popCover
+      PopupMenu = popView
       ExplicitWidth = 284
       ExplicitHeight = 237
     end
     object lblInfo: TLabel
       Left = 0
-      Top = 98
-      Width = 107
+      Top = 174
+      Width = 223
       Height = 18
       Alignment = taCenter
       Anchors = [akLeft, akRight, akBottom]
@@ -108,6 +108,14 @@ object frmCoverArt: TfrmCoverArt
     object popCoverExport: TSpTBXItem
       Caption = #12450#12523#12496#12512#12450#12540#12488#12434#12456#12463#12473#12509#12540#12488#12377#12427'...'
       OnClick = popCoverExportClick
+    end
+  end
+  object popView: TSpTBXPopupMenu
+    Left = 145
+    Top = 30
+    object popView_Export: TSpTBXItem
+      Caption = #12450#12523#12496#12512#12450#12540#12488#12434#12456#12463#12473#12509#12540#12488#12377#12427'...'
+      OnClick = popView_ExportClick
     end
   end
 end

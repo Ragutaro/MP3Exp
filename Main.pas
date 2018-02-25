@@ -168,6 +168,7 @@ type
     procedure popLvwAdd2iTunesClick(Sender: TObject);
     procedure popTvwMakeSSymLinkClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure tvwTreeDblClick(Sender: TObject);
   private
     { Private 宣言 }
     procedure _LoadSettings;
@@ -1279,6 +1280,30 @@ begin
   end;
 end;
 
+procedure TfrmMain.tvwTreeDblClick(Sender: TObject);
+var
+  n : TTreeNode;
+  item : TListItemEx;
+  m : IWMPMedia;
+begin
+  n := tvwTree.Selected;
+  if n <> nil then
+  begin
+    if n.ImageIndex in [ICO_MUSIC_ALBUM_CLOSE, ICO_MUSIC_ALBUM_CLOSE_SYM] then
+    begin
+      _ListMediaFiles;
+      item := TListItemEx(lvwList.Items[0]);
+      if (item <> Nil) and (item.Caption <> '') then
+      begin
+        _CreatePlayList;
+        wmp.settings.volume := 100;
+        m := wmp.currentPlaylist.Item[item.Index];
+        wmp.controls.playItem(m);
+      end;
+    end;
+  end;
+end;
+
 procedure TfrmMain.tvwTreeDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
   nFrom, nTo : TTreeNode;
@@ -1631,19 +1656,19 @@ procedure TfrmMain._LoadCoverArt(bmp: TBitmap);
     b := GetBValue(c);
     //右上
     c := bmpSrc.Canvas.Pixels[60, 20];
-    r := (r + GetRValue(c)) div 2;
-    g := (g + GetGValue(c)) div 2;
-    b := (b + GetBValue(c)) div 2;
+    r := r + GetRValue(c);
+    g := g + GetGValue(c);
+    b := b + GetBValue(c);
     //左下
     c := bmpSrc.Canvas.Pixels[20, 60];
-    r := (r + GetRValue(c)) div 2;
-    g := (g + GetGValue(c)) div 2;
-    b := (b + GetBValue(c)) div 2;
+    r := r + GetRValue(c);
+    g := g + GetGValue(c);
+    b := b + GetBValue(c);
     //右下
     c := bmpSrc.Canvas.Pixels[60, 60];
-    r := (r + GetRValue(c)) div 2;
-    g := (g + GetGValue(c)) div 2;
-    b := (b + GetBValue(c)) div 2;
+    r := (r + GetRValue(c)) div 4;
+    g := (g + GetGValue(c)) div 4;
+    b := (b + GetBValue(c)) div 4;
     Result := RGB(r, g, b);
   end;
 
