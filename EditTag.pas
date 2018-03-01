@@ -511,7 +511,7 @@ procedure TfrmEditTag.tbrGetLyricsClick(Sender: TObject);
 var
   item : TlvwList;
   tag : TTags;
-  sTitle, sArtist, sPath, sExec : String;
+  sTitle, sArtist, sExec : String;
 begin
   item := TlvwList(lvwList.Selected);
   if item <> nil then
@@ -526,8 +526,7 @@ begin
     end;
     if (sTitle <> '') or (sArtist <> '') then
     begin
-      sPath := 'C:\!MyData\Programs\Lyrics Master\ExtSupport.js';
-      sExec :=  Format('"%s" multi "%s" "%s"' ,[sPath, sTitle, sArtist]);
+      sExec :=  Format('"%s" multi "%s" "%s"' ,[av.sLyricsMaster, sTitle, sArtist]);
       ShellExecuteW(Self.Handle, 'OPEN', 'C:\WINDOWS\system32\wscript.exe', pchar(sExec), nil, SW_SHOWNORMAL);
     end;
   end;

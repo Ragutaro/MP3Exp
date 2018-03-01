@@ -29,7 +29,6 @@ type
     tbrPause: TSpTBXItem;
     btnNext: TSpTBXItem;
     btnBefore: TSpTBXItem;
-    imgTreeView: TImageList;
     pngToolbar: TPngImageList;
     SpTBXTabControl1: TSpTBXTabControl;
     tabTag: TSpTBXTabItem;
@@ -98,6 +97,8 @@ type
     lblComposer: TLabel;
     lblLyricist: TLabel;
     lblTitle: TLabel;
+    pngLvw: TPngImageList;
+    pngTvw: TPngImageList;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure lvwListDblClick(Sender: TObject);
@@ -192,7 +193,7 @@ type
   TApplicationValues = record
     sMusicFolder, sCurrentSong, sCurrentDir : String;
     sValidExtentions, sPlaylistDir : String;
-    sMp3Gain : String;
+    sMp3Gain, sLyricsMaster : String;
     cNowPlay, cNowPlayFont, cTotal, cTotalFont, cAlbumArt : TColor;
   end;
 
@@ -353,7 +354,11 @@ begin
     //再生中のアイコン
     if TListItemEx(Item).sFullPath = av.sCurrentSong then
     begin
-      Item.ImageIndex := 3;
+      if ContainsText(wmp.status, '再生中') then
+        Item.ImageIndex := ICO_NOW_PLAYING
+      else
+        Item.ImageIndex := ICO_NOT_PLAYING;
+
       Item.MakeVisible(True);
       Brush.Color := av.cNowPlay;
       Font.Color  := av.cNowPlayFont;
@@ -762,7 +767,7 @@ var
   s : String;
 begin
   n := tvwTree.Selected;
-  if (n = nil) or (n.ImageIndex = 0) then
+  if (n = nil) or (n.ImageIndex = ICO_MUSIC_ROOT) then
     Exit;
 
   Case tvwTree.Selected.ImageIndex of
@@ -871,7 +876,7 @@ begin
   if (s <> '') and IsValidFileName(s) then
   begin
     n := tvwTree.Items.AddChild(tvwTree.Selected, s);
-    n.ImageIndex := ICO_PLAYLIST_FILE;
+    n.ImageIndex    := ICO_PLAYLIST_FILE;
     n.SelectedIndex := ICO_PLAYLIST_FILE;
     sl := TStringList.Create;
     try
@@ -1738,6 +1743,7 @@ begin
     av.sMusicFolder         := ini.ReadString(Self.Name, 'MusicFolder', 'D:\Symlink\iTunes Music\Trees');
     av.sValidExtentions     := ini.ReadString(Self.Name, 'ValidExtentions', '.mp3.m4a.m4b.mp4.aac.m4p.wma.wmv.flac.fla.mpc.ape.ogg.oga.wav.wv');
     av.sMp3Gain             := ini.ReadString(Self.Name, 'MP3Gain', 'C:\!MyData\Programs\MP3Gain\MP3GainGUI.exe');
+    av.sLyricsMaster        := ini.ReadString(Self.Name, 'LyricsMaster', 'C:\!MyData\Programs\Lyrics Master\ExtSupport.js');
     Self.Font.Name          := ini.ReadString('Font', 'FontName', '游ゴシック Medium');
     Self.Font.Size          := ini.ReadInteger('Font', 'FontSize', 10);
     av.cAlbumArt            := ini.ReadInteger(Self.Name, 'AlbumArtBkColor', clGray);
@@ -1798,6 +1804,7 @@ begin
     ini.WriteString(Self.Name, 'MusicFolder', av.sMusicFolder);
     ini.WriteString(Self.Name, 'ValidExtentions', av.sValidExtentions);
     ini.WriteString(Self.Name, 'MP3Gain', av.sMp3Gain);
+    ini.WriteString(Self.Name, 'LyricsMaster', av.sLyricsMaster);
     ini.WriteString('Font', 'FontName', Self.Font.Name);
     ini.WriteInteger('Font', 'FontSize', Self.Font.Size);
     ini.UpdateFile;

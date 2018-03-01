@@ -23,18 +23,26 @@ uses
 
 
 const
+  //TreeView
   ICO_MUSIC_ROOT            = 0;
-  ICO_MUSIC_FOLDER_CLOSE    = 1;
-  ICO_MUSIC_FOLDER_OPEN     = 2;
-  ICO_PLAYLIST_ROOT         = 13;
-  ICO_PLAYLIST_FILE         = 14;
-  ICO_MUSIC_ALBUM_CLOSE     = 15;
-  ICO_MUSIC_ALBUM_OPEN      = 16;
-  ICO_MUSIC_FOLDER_CLOSE_SYM= 17;
-  ICO_MUSIC_FOLDER_OPEN_SYM = 18;
-  ICO_MUSIC_ALBUM_CLOSE_SYM = 19;
-  ICO_MUSIC_ALBUM_OPEN_SYM  = 20;
-
+  ICO_PLAYLIST_ROOT         = 1;
+  ICO_TAB_MUSIC             = 2;
+  ICO_TAB_SEARCH            = 3;
+  ICO_TAB_TAG               = 4;
+  ICO_DELETE                = 5;
+  ICO_MUSIC_FOLDER_CLOSE    = 6;
+  ICO_MUSIC_FOLDER_OPEN     = 7;
+  ICO_MUSIC_ALBUM_CLOSE     = 8;
+  ICO_MUSIC_ALBUM_OPEN      = 9;
+  ICO_MUSIC_FOLDER_CLOSE_SYM= 10;
+  ICO_MUSIC_FOLDER_OPEN_SYM = 11;
+  ICO_MUSIC_ALBUM_CLOSE_SYM = 12;
+  ICO_MUSIC_ALBUM_OPEN_SYM  = 13;
+  ICO_ALBUM_ART             = 14;
+  ICO_PLAYLIST_FILE         = 15;
+  //ListView
+  ICO_NOW_PLAYING           = 0;
+  ICO_NOT_PLAYING           = 1;
 
 implementation
 
