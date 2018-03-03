@@ -302,13 +302,21 @@ begin
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
+var
+  n : TTreeNode;
 begin
   DisableVclStyles(Self, 'TspTBXTrackBar');
   _LoadSettings;
   if FileExists(GetApplicationPath + F_TreeView) then
   begin
   	tvwTree.LoadFromFileEx(GetApplicationPath + F_TreeView);
-    tvwTreeClick(nil);
+    _ListMusicFiles;
+    //最後に開いていたアルバムを表示する
+    n := tvwTree.Selected;
+    if n <> nil then
+    begin
+    	n.MakeVisible;
+    end;
   end
   else
     _SearchFolders(tvwTree.Items[0], av.sMusicFolder);
