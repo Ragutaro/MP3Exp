@@ -99,6 +99,7 @@ type
     lblTitle: TLabel;
     pngLvw: TPngImageList;
     pngTvw: TPngImageList;
+    popLvwNoItems: TSpTBXItem;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure lvwListDblClick(Sender: TObject);
@@ -185,6 +186,7 @@ type
     procedure _ListMediaFiles;
     procedure _ListPlaylistFiles;
     procedure _SetColors;
+    procedure _ClearListItems;
   public
     { Public 宣言 }
     procedure _ListMusicFiles;
@@ -584,86 +586,93 @@ begin
 end;
 
 procedure TfrmMain.popLvwPopup(Sender: TObject);
-var
-  n : TTreeNode;
-  m : TSpTBXItem;
-  sl : TStringList;
-  s : String;
-  i : Integer;
-begin
-  popLvwShowAlbumArt.Enabled  := True;
-  popLvwRename.Enabled        := True;
-  popLvwAddToPlaylist.Enabled := True;
-  popLvwAdd2iTunes.Enabled    := True;
-  popLvwDelete.Enabled        := True;
-  popLvwDelete.Caption := 'ファイルの削除...';
-  n := tvwTree.Selected;
-  if n = nil then
+  procedure in_LoadPlayList;
+  var
+    m : TSpTBXItem;
+    sl : TStringList;
+    s : String;
+    i : Integer;
   begin
-    popLvwShowAlbumArt.Enabled  := False;
-    popLvwRename.Enabled        := False;
-    popLvwAddToPlaylist.Enabled := False;
-    popLvwAdd2iTunes.Enabled    := False;
-    popLvwDelete.Enabled        := False;
-  	Exit;
+    //まずはプレイリストを初期化する
+    for i := popLvwAddToPlaylist.Count-1 downto 0 do
+      popLvwAddToPlaylist.Delete(i);
+
+    //プレイリストのロード
+    sl := TStringList.Create;
+    try
+      GetFiles(av.sPlaylistDir, '*.m3u', sl, False);
+      for s in sl do
+      begin
+        m := TSpTBXItem.Create(self);
+        m.Caption := ExtractFileBody(s);
+        m.OnClick := _AddToPlaylist;
+        popLvwAddToPlaylist.Add(m);
+      end;
+    finally
+      sl.Free;
+    end;
   end;
 
-  Case n.ImageIndex of
+begin
+  popLvwNoItems.Visible       := True;
+  popLvwShowAlbumArt.Visible  := True;
+  popLvwRename.Visible        := True;
+  popLvwAddToPlaylist.Visible := True;
+  popLvwAdd2iTunes.Visible    := True;
+  popLvwDelete.Visible        := True;
+
+  Case tvwTree.Selected.ImageIndex of
     ICO_MUSIC_ROOT :
       begin
-        popLvwShowAlbumArt.Enabled  := False;
-        popLvwRename.Enabled        := False;
-        popLvwAddToPlaylist.Enabled := False;
-        popLvwAdd2iTunes.Enabled    := False;
-        popLvwDelete.Enabled        := False;
+        popLvwShowAlbumArt.Visible  := False;
+        popLvwRename.Visible        := False;
+        popLvwAddToPlaylist.Visible := False;
+        popLvwAdd2iTunes.Visible    := False;
+        popLvwDelete.Visible        := False;
       end;
     ICO_MUSIC_FOLDER_CLOSE :
       begin
-        popLvwShowAlbumArt.Enabled  := False;
-        popLvwRename.Enabled        := False;
-        popLvwAddToPlaylist.Enabled := False;
-        popLvwAdd2iTunes.Enabled    := False;
-        popLvwDelete.Enabled        := False;
+        popLvwShowAlbumArt.Visible  := False;
+        popLvwRename.Visible        := False;
+        popLvwAddToPlaylist.Visible := False;
+        popLvwAdd2iTunes.Visible    := False;
+        popLvwDelete.Visible        := False;
       end;
     ICO_MUSIC_FOLDER_CLOSE_SYM :
       begin
-        popLvwShowAlbumArt.Enabled  := False;
-        popLvwRename.Enabled        := False;
-        popLvwAddToPlaylist.Enabled := False;
-        popLvwAdd2iTunes.Enabled    := False;
-        popLvwDelete.Enabled        := False;
+        popLvwNoItems.Visible       := False;
+        popLvwShowAlbumArt.Visible  := False;
+        popLvwRename.Visible        := False;
+        popLvwAddToPlaylist.Visible := False;
+        popLvwAdd2iTunes.Visible    := False;
+        popLvwDelete.Visible        := False;
+      end;
+    ICO_MUSIC_ALBUM_CLOSE :
+      begin
+        popLvwNoItems.Visible       := False;
+        in_LoadPlayList;
+      end;
+    ICO_MUSIC_ALBUM_CLOSE_SYM :
+      begin
+        popLvwNoItems.Visible       := False;
+        popLvwRename.Visible        := False;
+        popLvwDelete.Visible        := False;
+        in_LoadPlayList;
       end;
     ICO_PLAYLIST_ROOT :
       begin
-        popLvwShowAlbumArt.Enabled  := False;
-        popLvwRename.Enabled        := False;
-        popLvwAddToPlaylist.Enabled := False;
-        popLvwAdd2iTunes.Enabled    := False;
-        popLvwDelete.Enabled        := False;
+        popLvwShowAlbumArt.Visible  := False;
+        popLvwRename.Visible        := False;
+        popLvwAddToPlaylist.Visible := False;
+        popLvwAdd2iTunes.Visible    := False;
+        popLvwDelete.Visible        := False;
       end;
     ICO_PLAYLIST_FILE :
       begin
-        popLvwRename.Enabled        := False;
-        popLvwAddToPlaylist.Enabled := False;
-        popLvwDelete.Caption := 'Playlistから削除...';
+        popLvwNoItems.Visible       := False;
+        popLvwRename.Visible        := False;
+        popLvwAddToPlaylist.Visible := False;
       end;
-  end;
-
-  for i := popLvwAddToPlaylist.Count-1 downto 0 do
-    popLvwAddToPlaylist.Delete(i);
-
-  sl := TStringList.Create;
-  try
-    GetFiles(av.sPlaylistDir, '*.m3u', sl, False);
-    for s in sl do
-    begin
-      m := TSpTBXItem.Create(self);
-      m.Caption := ExtractFileBody(s);
-      m.OnClick := _AddToPlaylist;
-      popLvwAddToPlaylist.Add(m);
-    end;
-  finally
-    sl.Free;
   end;
 end;
 
@@ -709,30 +718,30 @@ begin
 end;
 
 procedure TfrmMain.popTvwCreateAlbumClick(Sender: TObject);
-var
-  n : TTreeNode;
-  sNewName, sNewPath : String;
+//var
+//  n : TTreeNode;
+//  sNewName, sNewPath : String;
 begin
-  n := tvwTree.Selected;
-  if n = nil then
-    Exit;
-
-  sNewName := InputBox('アルバムの作成', 'アルバム名を入力して下さい。', '');
-  if sNewName <> '' then
-  begin
-    if IsValidFileName(sNewName) then
-    begin
-      sNewPath := Format('%s%s\%s', [av.sMusicFolder, tvwTree.GetFullNodePath(n), sNewName]);
-      if TDirectory.Exists(sNewPath) then
-        MessageDlg('同じ名称のアルバムが存在します。変更して下さい。', '', mtWarning, [mbOK])
-      else
-      begin
-        CreateFolder(sNewPath);
-        tvwTree.AddChildNode(sNewName, ICO_MUSIC_ALBUM_CLOSE, ICO_MUSIC_ALBUM_OPEN);
-      end;
-    end;
-    n.AlphaSort(True);
-  end;
+//  n := tvwTree.Selected;
+//  if n = nil then
+//    Exit;
+//
+//  sNewName := InputBox('アルバムの作成', 'アルバム名を入力して下さい。', '');
+//  if sNewName <> '' then
+//  begin
+//    if IsValidFileName(sNewName) then
+//    begin
+//      sNewPath := Format('%s%s\%s', [av.sMusicFolder, tvwTree.GetFullNodePath(n), sNewName]);
+//      if TDirectory.Exists(sNewPath) then
+//        MessageDlg('同じ名称のアルバムが存在します。変更して下さい。', '', mtWarning, [mbOK])
+//      else
+//      begin
+//        CreateFolder(sNewPath);
+//        tvwTree.AddChildNode(sNewName, ICO_MUSIC_ALBUM_CLOSE, ICO_MUSIC_ALBUM_OPEN);
+//      end;
+//    end;
+//    n.AlphaSort(True);
+//  end;
 end;
 
 procedure TfrmMain.popTvwCreateFolderClick(Sender: TObject);
@@ -978,78 +987,80 @@ end;
 
 procedure TfrmMain.popTvwPopup(Sender: TObject);
 begin
-  popTvwRenameFolder.Enabled        := True;
-  popTvwCreateFolder.Enabled        := True;
-  popTvwCreateAlbum.Enabled         := True;
-  SpTBXSubmenuItem1.Enabled         := True;
-  popTvwNewPlaylist.Enabled         := True;
-  popTvwSendToMP3Gain.Enabled       := True;
-  popTvwAdd2iTunes.Enabled          := True;
-  popTvwReload.Enabled              := True;
-  popTvwDeletePRIVTags.Enabled      := True;
-  popTvwMakeSSymLink.Enabled        := True;
-  popTvwOpenExplorer.Enabled        := True;
-  popTvwDelete.Enabled              := True;
+  popTvwRenameFolder.Visible        := True;
+  popTvwCreateFolder.Visible        := True;
+  popTvwCreateAlbum.Visible         := True;
+  SpTBXSubmenuItem1.Visible         := True;
+  popTvwNewPlaylist.Visible         := True;
+  popTvwSendToMP3Gain.Visible       := True;
+  popTvwAdd2iTunes.Visible          := True;
+  popTvwReload.Visible              := True;
+  popTvwDeletePRIVTags.Visible      := True;
+  popTvwMakeSSymLink.Visible        := True;
+  popTvwOpenExplorer.Visible        := True;
+  popTvwDelete.Visible              := True;
   Case tvwTree.Selected.ImageIndex of
     ICO_MUSIC_ROOT : //Root
       begin
-        popTvwRenameFolder.Enabled  := False;
-        popTvwCreateAlbum.Enabled   := False;
-        popTvwDelete.Enabled        := False;
-        popTvwNewPlaylist.Enabled   := False;
-        popTvwAdd2iTunes.Enabled    := False;
+        popTvwRenameFolder.Visible  := False;
+        popTvwCreateAlbum.Visible   := False;
+        popTvwDelete.Visible        := False;
+        popTvwNewPlaylist.Visible   := False;
+        popTvwAdd2iTunes.Visible    := False;
+        popTvwSendToMP3Gain.Visible := False;
+        popTvwDeletePRIVTags.Visible:= False;
       end;
     ICO_MUSIC_FOLDER_CLOSE :
       begin
-        popTvwNewPlaylist.Enabled   := False;
+        popTvwNewPlaylist.Visible   := False;
       end;
     ICO_MUSIC_ALBUM_CLOSE :
       begin
-        popTvwCreateFolder.Enabled  := False;
-        popTvwCreateAlbum.Enabled   := False;
-        popTvwNewPlaylist.Enabled   := False;
-        popTvwReload.Enabled        := False;
-        popTvwMakeSSymLink.Enabled  := False;
+        popTvwCreateFolder.Visible  := False;
+        popTvwCreateAlbum.Visible   := False;
+        popTvwNewPlaylist.Visible   := False;
+        popTvwReload.Visible        := False;
+        popTvwMakeSSymLink.Visible  := False;
       end;
     ICO_MUSIC_FOLDER_CLOSE_SYM :
       begin
-        popTvwNewPlaylist.Enabled   := False;
-        popTvwMakeSSymLink.Enabled  := False;
+        popTvwNewPlaylist.Visible   := False;
+        popTvwMakeSSymLink.Visible  := False;
       end;
     ICO_MUSIC_ALBUM_CLOSE_SYM :
       begin
-        popTvwCreateFolder.Enabled  := False;
-        popTvwCreateAlbum.Enabled   := False;
-        popTvwNewPlaylist.Enabled   := False;
-        popTvwReload.Enabled        := False;
-        popTvwMakeSSymLink.Enabled  := False;
+        popTvwCreateFolder.Visible  := False;
+        popTvwCreateAlbum.Visible   := False;
+        popTvwNewPlaylist.Visible   := False;
+        popTvwReload.Visible        := False;
+        popTvwMakeSSymLink.Visible  := False;
       end;
     ICO_PLAYLIST_ROOT :  //Playlist Root
       begin
-        popTvwRenameFolder.Enabled  := False;
-        popTvwCreateFolder.Enabled  := False;
-        popTvwCreateAlbum.Enabled   := False;
-        SpTBXSubmenuItem1.Enabled   := False;
-        popTvwSendToMP3Gain.Enabled := False;
-        popTvwAdd2iTunes.Enabled    := False;
-        popTvwReload.Enabled        := False;
-        popTvwDeletePRIVTags.Enabled:= False;
-        popTvwMakeSSymLink.Enabled  := False;
-        popTvwOpenExplorer.Enabled  := False;
-        popTvwDelete.Enabled        := False;
+        popTvwRenameFolder.Visible  := False;
+        popTvwCreateFolder.Visible  := False;
+        popTvwCreateAlbum.Visible   := False;
+        SpTBXSubmenuItem1.Visible   := False;
+        popTvwSendToMP3Gain.Visible := False;
+        popTvwAdd2iTunes.Visible    := False;
+        popTvwReload.Visible        := False;
+        popTvwDeletePRIVTags.Visible:= False;
+        popTvwMakeSSymLink.Visible  := False;
+        popTvwOpenExplorer.Visible  := False;
+        popTvwDelete.Visible        := False;
       end;
     ICO_PLAYLIST_FILE :   //Playlist
       begin
-        popTvwCreateFolder.Enabled  := False;
-        popTvwCreateAlbum.Enabled   := False;
-        SpTBXSubmenuItem1.Enabled   := False;
-        popTvwNewPlaylist.Enabled   := False;
-        popTvwSendToMP3Gain.Enabled := False;
-        popTvwAdd2iTunes.Enabled    := False;
-        popTvwReload.Enabled        := False;
-        popTvwDeletePRIVTags.Enabled:= False;
-        popTvwMakeSSymLink.Enabled  := False;
-        popTvwOpenExplorer.Enabled  := False;
+        popTvwCreateFolder.Visible  := False;
+        popTvwCreateAlbum.Visible   := False;
+        SpTBXSubmenuItem1.Visible   := False;
+        popTvwNewPlaylist.Visible   := False;
+        popTvwSendToMP3Gain.Visible := False;
+        popTvwAdd2iTunes.Visible    := False;
+        popTvwReload.Visible        := False;
+        popTvwDeletePRIVTags.Visible:= False;
+        popTvwMakeSSymLink.Visible  := False;
+        popTvwOpenExplorer.Visible  := False;
       end;
   end;
 end;
@@ -1457,6 +1468,13 @@ begin
   end;
 end;
 
+procedure TfrmMain._ClearListItems;
+begin
+  lvwList.Items.BeginUpdate;
+  lvwList.Items.Clear;
+  lvwList.Items.EndUpdate;
+end;
+
 procedure TfrmMain._CreatePlayList;
 var
   sl : TStringList;
@@ -1564,8 +1582,10 @@ end;
 procedure TfrmMain._ListMusicFiles;
 begin
   Case tvwTree.Selected.ImageIndex of
+    ICO_MUSIC_ROOT                                     : _ClearListItems;
     ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_FOLDER_CLOSE_SYM : _ListMediaFiles;
     ICO_MUSIC_ALBUM_CLOSE, ICO_MUSIC_ALBUM_CLOSE_SYM   : _ListMediaFiles;
+    ICO_PLAYLIST_ROOT                                  : _ClearListItems;
     ICO_PLAYLIST_FILE                                  : _ListPlaylistFiles;
   end;
 end;
