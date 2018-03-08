@@ -5807,7 +5807,9 @@ object frmMain: TfrmMain
     Left = 348
     Top = 88
     object popLvwNoItems: TSpTBXItem
-      Caption = #21033#29992#21487#33021#12394#38917#30446#12399#12354#12426#12414#12379#12435
+      Caption = #21033#29992#21487#33021#12394#12513#12491#12517#12540#38917#30446#12399#12354#12426#12414#12379#12435
+      Enabled = False
+      ImageIndex = 4
     end
     object popLvwShowAlbumArt: TSpTBXItem
       Caption = #12450#12523#12496#12512#12450#12540#12488#12434#34920#31034'...'

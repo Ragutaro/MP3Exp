@@ -197,6 +197,7 @@ type
     sValidExtentions, sPlaylistDir : String;
     sMp3Gain, sLyricsMaster : String;
     cNowPlay, cNowPlayFont, cTotal, cTotalFont, cAlbumArt : TColor;
+    iX1, iY1, iX2, iY2, iX3, iY3, iX4, iY4 : Integer;
   end;
 
 var
@@ -413,7 +414,7 @@ var
 begin
   itemSrc := TListItemEx(lvwList.Selected);
   itemDst := TListItemEx(lvwList.GetItemAt(X, Y));
-  if itemDst <> nil then
+  if (itemDst <> nil) and (tvwTree.Selected.ImageIndex = ICO_PLAYLIST_FILE) then
   begin
     itemDst := TListItemEx(lvwList.Items.Insert(itemDst.Index));
     itemDst.Assign(itemSrc);
@@ -445,12 +446,7 @@ end;
 procedure TfrmMain.lvwListDragOver(Sender, Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
-  if ContainsText(wmp.status, '再生中') then
-  begin
-  	Accept := False;
-    Exit;
-  end;
-
+  Accept := False;
   if (tvwTree.Selected.ImageIndex = ICO_PLAYLIST_FILE) and (Source = lvwList) then
     Accept := True;
 end;
@@ -1683,22 +1679,22 @@ procedure TfrmMain._LoadCoverArt(bmp: TBitmap);
     c : TColor;
   begin
     //左上
-    c := bmpSrc.Canvas.Pixels[20, 20];
+    c := bmpSrc.Canvas.Pixels[av.iX1, av.iY1];
     r := GetRValue(c);
     g := GetGValue(c);
     b := GetBValue(c);
     //右上
-    c := bmpSrc.Canvas.Pixels[60, 20];
+    c := bmpSrc.Canvas.Pixels[av.iX2, av.iY2];
     r := r + GetRValue(c);
     g := g + GetGValue(c);
     b := b + GetBValue(c);
     //左下
-    c := bmpSrc.Canvas.Pixels[20, 60];
+    c := bmpSrc.Canvas.Pixels[av.iX3, av.iY3];
     r := r + GetRValue(c);
     g := g + GetGValue(c);
     b := b + GetBValue(c);
     //右下
-    c := bmpSrc.Canvas.Pixels[60, 60];
+    c := bmpSrc.Canvas.Pixels[av.iX4, av.iY4];
     r := (r + GetRValue(c)) div 4;
     g := (g + GetGValue(c)) div 4;
     b := (b + GetBValue(c)) div 4;
@@ -1775,6 +1771,14 @@ begin
     Self.Font.Name          := ini.ReadString('Font', 'FontName', '游ゴシック Medium');
     Self.Font.Size          := ini.ReadInteger('Font', 'FontSize', 10);
     av.cAlbumArt            := ini.ReadInteger(Self.Name, 'AlbumArtBkColor', clGray);
+    av.iX1                  := ini.ReadInteger(Self.Name, 'AlbumX1', 20);
+    av.iY1                  := ini.ReadInteger(Self.Name, 'AlbumY1', 20);
+    av.iX2                  := ini.ReadInteger(Self.Name, 'AlbumX2', 60);
+    av.iY2                  := ini.ReadInteger(Self.Name, 'AlbumY2', 20);
+    av.iX3                  := ini.ReadInteger(Self.Name, 'AlbumX3', 20);
+    av.iY3                  := ini.ReadInteger(Self.Name, 'AlbumY3', 60);
+    av.iX4                  := ini.ReadInteger(Self.Name, 'AlbumX4', 60);
+    av.iY4                  := ini.ReadInteger(Self.Name, 'AlbumY4', 60);
   finally
     ini.Free;
   end;
@@ -1835,6 +1839,14 @@ begin
     ini.WriteString(Self.Name, 'LyricsMaster', av.sLyricsMaster);
     ini.WriteString('Font', 'FontName', Self.Font.Name);
     ini.WriteInteger('Font', 'FontSize', Self.Font.Size);
+    ini.WriteInteger(Self.Name, 'AlbumX1', av.iX1);
+    ini.WriteInteger(Self.Name, 'AlbumY1', av.iY1);
+    ini.WriteInteger(Self.Name, 'AlbumX2', av.iX2);
+    ini.WriteInteger(Self.Name, 'AlbumY2', av.iY2);
+    ini.WriteInteger(Self.Name, 'AlbumX3', av.iX3);
+    ini.WriteInteger(Self.Name, 'AlbumY3', av.iY3);
+    ini.WriteInteger(Self.Name, 'AlbumX4', av.iX4);
+    ini.WriteInteger(Self.Name, 'AlbumY4', av.iY4);
     ini.UpdateFile;
   finally
     ini.Free;

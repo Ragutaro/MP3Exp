@@ -10,7 +10,7 @@ uses
   Vcl.Filectrl, Vcl.ComCtrls, HideListView, Vcl.StdCtrls, HideComboBox,
   SpTBXEditors, Vcl.ExtCtrls, System.ImageList, Vcl.ImgList, TB2Dock, SpTBXItem,
   TB2Item, TB2Toolbar, SpTBXTabs, Vcl.ExtDlgs, Winapi.shellAPI, System.UITypes,
-  Vcl.Menus, jpeg, PNGImage, GIFImg;
+  Vcl.Menus, jpeg, PNGImage, GIFImg, HideLabel;
 
 type
   TfrmEditTag = class(TForm)
@@ -87,6 +87,10 @@ type
     lvwCover: THideListView;
     btnRefreshCoverArt: TButton;
     imgLyric: TImageList;
+    panHelp: TPanel;
+    lblHelp: THideLabel;
+    SpTBXToolbar2: TSpTBXToolbar;
+    btnCloseHelp: TSpTBXItem;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure cmbData2Change(Sender: TObject);
@@ -142,6 +146,9 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnRefreshCoverArtClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure btnCloseHelpClick(Sender: TObject);
+    procedure Label4Click(Sender: TObject);
+    procedure Label6Click(Sender: TObject);
   private
     { Private 宣言 }
     procedure _LoadSettings;
@@ -312,6 +319,32 @@ begin
   Case Key of
     VK_ESCAPE : Close;
   end;
+end;
+
+procedure TfrmEditTag.Label4Click(Sender: TObject);
+var
+  pt : TPoint;
+begin
+  lblHelp.Caption := '<連番> : 1番目から開始する。' + #13#10 +
+                     '<連番>n : n番目から開始する。';
+  GetCursorPos(pt);
+  pt := ScreenToClient(pt);
+  panHelp.Top := pt.Y - 75;
+  panHelp.Left := pt.X - 150;
+  panHelp.Visible := True;
+end;
+
+procedure TfrmEditTag.Label6Click(Sender: TObject);
+var
+  pt : TPoint;
+begin
+  lblHelp.Caption := '1枚だけの場合は指定不要。' + #13#10 +
+                     '複数枚の場合は、1/3、2/3、3/3 等と指定する。';
+  GetCursorPos(pt);
+  pt := ScreenToClient(pt);
+  panHelp.Top := pt.Y - 75;
+  panHelp.Left := pt.X - 150;
+  panHelp.Visible := True;
 end;
 
 procedure TfrmEditTag.lvwCoverCreateItemClass(Sender: TCustomListView;
@@ -672,6 +705,11 @@ begin
   tabLyric.Visible := True;
   tabCover.Visible := True;
   SpTBXTabControl1.ActiveTabIndex := 1;
+end;
+
+procedure TfrmEditTag.btnCloseHelpClick(Sender: TObject);
+begin
+  panHelp.Visible := False;
 end;
 
 procedure TfrmEditTag.btnDeleteAllAPICClick(Sender: TObject);

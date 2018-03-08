@@ -133,8 +133,12 @@ object frmEditTag: TfrmEditTag
       Top = 60
       Width = 48
       Height = 18
+      Cursor = crHandPoint
       Anchors = [akLeft, akBottom]
       Caption = #12488#12521#12483#12463
+      ParentShowHint = False
+      ShowHint = False
+      OnClick = Label4Click
     end
     object Label5: TLabel
       Left = 360
@@ -149,8 +153,10 @@ object frmEditTag: TfrmEditTag
       Top = 60
       Width = 72
       Height = 18
+      Cursor = crHandPoint
       Anchors = [akLeft, akBottom]
       Caption = #12487#12451#12473#12463#26522#25968
+      OnClick = Label6Click
     end
     object Label7: TLabel
       Left = 270
@@ -700,6 +706,44 @@ object frmEditTag: TfrmEditTag
             OnClick = tbrSaveCurrentLyricsClick
           end
         end
+      end
+    end
+  end
+  object panHelp: TPanel
+    Left = 594
+    Top = 32
+    Width = 300
+    Height = 75
+    Caption = 'panHelp'
+    Color = clCream
+    ParentBackground = False
+    TabOrder = 3
+    Visible = False
+    object lblHelp: THideLabel
+      Left = 8
+      Top = 8
+      Width = 263
+      Height = 59
+      Autosize = False
+      Caption = 'lblHelp'
+      Color = clCream
+      ParentColor = False
+      Transparent = False
+      WordWrap = True
+      Position = psLeft
+    end
+    object SpTBXToolbar2: TSpTBXToolbar
+      Left = 272
+      Top = 8
+      Width = 23
+      Height = 22
+      Images = frmMain.pngTvw
+      TabOrder = 0
+      Caption = 'SpTBXToolbar2'
+      object btnCloseHelp: TSpTBXItem
+        Caption = #38281#12376#12427
+        ImageIndex = 5
+        OnClick = btnCloseHelpClick
       end
     end
   end
