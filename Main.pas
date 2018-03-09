@@ -749,7 +749,7 @@ begin
   if n = nil then
     Exit;
 
-  sNewName := InputBox('フォルダの作成', 'フォルダ名を入力して下さい。', '');
+  sNewName := InputBoxEx('フォルダの作成', 'フォルダ名を入力して下さい。', '', [ibFileName]);
   if sNewName <> '' then
   begin
     if IsValidFileName(sNewName) then
@@ -885,7 +885,7 @@ var
   sl : TStringList;
   s, sFile : String;
 begin
-  s := InputBox('Playlistの作成', 'Playlistの名称を入力して下さい。', '');
+  s := InputBoxEx('Playlistの作成', 'Playlistの名称を入力して下さい。', '', [ibFileName]);
   if (s <> '') and IsValidFileName(s) then
   begin
     n := tvwTree.Items.AddChild(tvwTree.Selected, s);
@@ -1089,7 +1089,7 @@ begin
   if n = nil then
     Exit;
 
-  sNewName := InputBox('名称の変更', '新しい名称を入力して下さい。', n.Text);
+  sNewName := InputBoxEx('名称の変更', '新しい名称を入力して下さい。', n.Text, [ibFileName]);
   if (sNewName <> '') and (sNewName <> n.Text) then
   begin
     Case tvwTree.Selected.ImageIndex of
