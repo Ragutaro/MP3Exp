@@ -177,24 +177,6 @@ object frmMain: TfrmMain
       ImageIndex = 4
       CustomWidth = 164
     end
-    object tabTagDetail: TSpTBXTabSheet
-      Left = 0
-      Top = 26
-      Width = 497
-      Height = 222
-      Caption = #12479#12464#35443#32048#24773#22577
-      ImageIndex = 4
-      TabItem = 'tabTag'
-      object memTagInfo: TMemo
-        Left = 2
-        Top = 0
-        Width = 491
-        Height = 218
-        Align = alClient
-        ScrollBars = ssVertical
-        TabOrder = 0
-      end
-    end
     object tabSearchMusic: TSpTBXTabSheet
       Left = 0
       Top = 26
@@ -266,6 +248,24 @@ object frmMain: TfrmMain
         SortOrder = soAscending
         WrapAround = False
         DefaultSortOrder = soAscending
+      end
+    end
+    object tabTagDetail: TSpTBXTabSheet
+      Left = 0
+      Top = 26
+      Width = 497
+      Height = 222
+      Caption = #12479#12464#35443#32048#24773#22577
+      ImageIndex = 4
+      TabItem = 'tabTag'
+      object memTagInfo: TMemo
+        Left = 2
+        Top = 0
+        Width = 491
+        Height = 218
+        Align = alClient
+        ScrollBars = ssVertical
+        TabOrder = 0
       end
     end
     object tabSelectMusic: TSpTBXTabSheet

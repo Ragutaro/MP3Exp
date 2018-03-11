@@ -138,6 +138,7 @@ end;
 
 procedure TfrmRename._RenameByInput;
 var
+  t : TTags;
   item : TListItemEx;
   sDir, sExt, sNewPath : String;
 begin
@@ -150,8 +151,14 @@ begin
   sNewPath := Format('%s%s%s', [sDir, Trim(edtInputName.Text), sExt]);
   RenameFile(item.sFullPath, sNewPath);
   //リストの情報を更新する
-  item.Caption := Trim(edtInputName.Text);
-  item.sFullPath := sNewPath;
+  t := TTags.Create;
+  try
+    t.LoadFromFile(sNewPath);
+    item.Caption := StrDef(t.GetTag(TAG_TITLE), Trim(edtInputName.Text));
+    item.sFullPath := sNewPath;
+  finally
+    t.Free;
+  end;
 end;
 
 procedure TfrmRename._RenameByTag;

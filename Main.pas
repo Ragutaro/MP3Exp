@@ -1524,7 +1524,7 @@ begin
           iBit  := StrToIntDef(m.getItemInfo('Bitrate'), 0) div 1000;
           iSize := StrToIntDef(m.getItemInfo('Filesize'), 0) div 1000;
           item  := TListItemEx(lvwList.Items.Add);
-          item.Caption := ExtractFileBody(sr.Name);
+          item.Caption := StrDef(m.getItemInfo('Title'), ExtractFileBody(sr.Name));
           item.SubItems.Add(m.durationString);
           item.SubItems.Add(IntToStr(iBit) + 'K');
           item.SubItems.Add(FormatFloat('#,###', iSize) + 'KB');
@@ -1665,11 +1665,11 @@ begin
       	memTagInfo.Lines.Add(t.CoverArts[i].Name + '.Description=' + t.CoverArts[i].Description);
       end;
     end;
+    memTagInfo.Lines.Add('FilePath='+t.FileName);
   finally
     t.Free;
     bmp.Free;
   end;
-
 end;
 
 procedure TfrmMain._LoadCoverArt(bmp: TBitmap);
