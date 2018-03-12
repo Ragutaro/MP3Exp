@@ -187,6 +187,7 @@ type
     procedure _ListPlaylistFiles;
     procedure _SetColors;
     procedure _ClearListItems;
+    procedure _LoadAlbumCoverWhenClick;
   public
     { Public 宣言 }
     procedure _ListMusicFiles;
@@ -1584,6 +1585,7 @@ begin
     ICO_PLAYLIST_ROOT                                  : _ClearListItems;
     ICO_PLAYLIST_FILE                                  : _ListPlaylistFiles;
   end;
+  _LoadAlbumCoverWhenClick;
 end;
 
 procedure TfrmMain._ListPlaylistFiles;
@@ -1666,6 +1668,36 @@ begin
       end;
     end;
     memTagInfo.Lines.Add('FilePath='+t.FileName);
+  finally
+    t.Free;
+    bmp.Free;
+  end;
+end;
+
+procedure TfrmMain._LoadAlbumCoverWhenClick;
+var
+  t : TTags;
+  bmp : TBitmap;
+begin
+  Application.ProcessMessages;
+  t := TTags.Create;
+  bmp := TBitmap.Create;
+  try
+    if lvwList.Items.Count > 0 then
+    begin
+      t.LoadFromFile(TListItemEx(lvwList.Items[0]).sFullPath);
+      if t.Loaded then
+      begin
+        try
+          t.LoadCoverArt(bmp, t, 0);
+          _LoadCoverArt(bmp);
+        except
+          //
+        end;
+      end;
+    end
+    else
+      _LoadCoverArt(bmp);
   finally
     t.Free;
     bmp.Free;

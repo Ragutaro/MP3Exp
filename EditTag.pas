@@ -581,11 +581,30 @@ procedure TfrmEditTag.tbrSaveLyricsClick(Sender: TObject);
 var
   item : TlvwList;
   tag : TTags;
-  sFile : String;
+  sFile, sLyric, sComposer : String;
+  i : Integer;
 begin
   item := TlvwList(lvwList.Selected);
   if (item = nil) or (memLyrics.Text = '') then
     Exit;
+
+  //作詞･作曲者名が空欄の場合、入力する。
+  for i := 0 to memLyrics.Lines.Count-1 do
+  begin
+    if ContainsText(memLyrics.Lines[i], '作詞') then
+    begin
+    	sLyric := Trim(RemoveLeft(CopyStrToEnd(memLyrics.Lines[i], '作詞'), 2));
+      if item.SubItems[8] = '' then
+        item.SubItems[8] := ReplaceText(sLyric, '　', '');
+    end
+    else if ContainsText(memLyrics.Lines[i], '作曲') then
+    begin
+    	sComposer := Trim(RemoveLeft(CopyStrToEnd(memLyrics.Lines[i], '作曲'), 2));
+      if item.SubItems[9] = '' then
+        item.SubItems[9] := ReplaceText(sComposer, '　', '');
+      Break;
+    end;
+  end;
 
   sFile := item.sFullPath;
   tag := TTags.Create;
@@ -594,6 +613,8 @@ begin
     if tag.Loaded then
     begin
       tag.SetTag(TAG_LYRICS, memLyrics.Text);
+      tag.SetTag(TAG_LYRICIST, item.SubItems[8]);
+      tag.SetTag(TAG_COMPOSER, item.SubItems[9]);
       tag.SaveToFile(sFile);
       item.SubItems[12] := ReplaceText(memLyrics.Text, #13#10, '\n');
     end;
