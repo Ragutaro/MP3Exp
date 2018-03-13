@@ -351,6 +351,7 @@ object frmMain: TfrmMain
           Height = 4
           Cursor = crSizeNS
           Align = alTop
+          OnMouseUp = SpTBXSplitter2MouseUp
         end
         object ScrollBox1: TScrollBox
           Left = 0

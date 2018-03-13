@@ -591,17 +591,15 @@ begin
   //作詞･作曲者名が空欄の場合、入力する。
   for i := 0 to memLyrics.Lines.Count-1 do
   begin
-    if ContainsText(memLyrics.Lines[i], '作詞') then
+    if (item.SubItems[8] = '') and ContainsText(memLyrics.Lines[i], '作詞') then
     begin
-    	sLyric := Trim(RemoveLeft(CopyStrToEnd(memLyrics.Lines[i], '作詞'), 2));
-      if item.SubItems[8] = '' then
-        item.SubItems[8] := ReplaceText(sLyric, '　', '');
+    	sLyric := ReplaceTextEx(CopyStrToEnd(memLyrics.Lines[i], '作詞'), ['作詞', '：', '　'], ['','','']);
+      item.SubItems[8] := Trim(sLyric);
     end
-    else if ContainsText(memLyrics.Lines[i], '作曲') then
+    else if (item.SubItems[9] = '') and ContainsText(memLyrics.Lines[i], '作曲') then
     begin
-    	sComposer := Trim(RemoveLeft(CopyStrToEnd(memLyrics.Lines[i], '作曲'), 2));
-      if item.SubItems[9] = '' then
-        item.SubItems[9] := ReplaceText(sComposer, '　', '');
+    	sComposer := ReplaceTextEx(CopyStrToEnd(memLyrics.Lines[i], '作曲'), ['作曲', '：', '　'], ['','','']);
+      item.SubItems[9] := Trim(sComposer);
       Break;
     end;
   end;

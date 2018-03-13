@@ -171,6 +171,8 @@ type
     procedure popTvwMakeSSymLinkClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure tvwTreeDblClick(Sender: TObject);
+    procedure SpTBXSplitter2MouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     { Private 宣言 }
     procedure _LoadSettings;
@@ -1135,6 +1137,23 @@ begin
   imgLyrics.Picture.Bitmap.Width  := imgLyrics.Width;
 end;
 
+procedure TfrmMain.SpTBXSplitter2MouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  t : TTags;
+begin
+  t := TTags.Create;
+  try
+    t.LoadFromFile(wmp.currentMedia.sourceURL);
+    if t.Loaded then
+    begin
+      _ShowLyrics(t.GetTag(TAG_LYRICS));
+    end;
+  finally
+    t.Free;
+  end;
+end;
+
 procedure TfrmMain.tbrEditTagClick(Sender: TObject);
 begin
   Application.CreateForm(TfrmEditTag, frmEditTag);
@@ -1678,29 +1697,45 @@ procedure TfrmMain._LoadAlbumCoverWhenClick;
 var
   t : TTags;
   bmp : TBitmap;
+  sFilename : String;
+  jpg : TJPEGImage;
 begin
   Application.ProcessMessages;
   t := TTags.Create;
   bmp := TBitmap.Create;
+  jpg := TJPEGImage.Create;
   try
-    if lvwList.Items.Count > 0 then
+    //まず、フォルダに表示用の画像があるか調べる。
+    //あればそれを読み込み、無ければMP3から取得する。
+    sFilename := av.sMusicFolder + tvwTree.GetFullNodePath(tvwTree.Selected) + '\Folder.jpg';
+    if FileExists(sFilename) then
     begin
-      t.LoadFromFile(TListItemEx(lvwList.Items[0]).sFullPath);
-      if t.Loaded then
-      begin
-        try
-          t.LoadCoverArt(bmp, t, 0);
-          _LoadCoverArt(bmp);
-        except
-          //
-        end;
-      end;
+      jpg.LoadFromFile(sFilename);
+      bmp.Assign(jpg);
+      _LoadCoverArt(bmp);
     end
     else
-      _LoadCoverArt(bmp);
+    begin
+      if lvwList.Items.Count > 0 then
+      begin
+        t.LoadFromFile(TListItemEx(lvwList.Items[0]).sFullPath);
+        if t.Loaded then
+        begin
+          try
+            t.LoadCoverArt(bmp, t, 0);
+            _LoadCoverArt(bmp);
+          except
+            //
+          end;
+        end;
+      end
+      else
+        _LoadCoverArt(bmp);
+    end;
   finally
     t.Free;
     bmp.Free;
+    jpg.Free;
   end;
 end;
 
