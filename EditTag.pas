@@ -356,7 +356,7 @@ end;
 procedure TfrmEditTag.lvwCoverCustomDrawItem(Sender: TCustomListView;
   Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
 begin
-  ut_DrawListItems(lvwCover, Item, State, DefaultDraw);
+  lvwCover.ColorizeLines(Item, State, DefaultDraw);
 end;
 
 procedure TfrmEditTag.lvwCoverDblClick(Sender: TObject);
@@ -393,7 +393,7 @@ end;
 procedure TfrmEditTag.lvwListCustomDrawItem(Sender: TCustomListView;
   Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
 begin
-  ut_DrawListItems(lvwList, Item, State, DefaultDraw);
+  lvwList.ColorizeLines(Item, State, DefaultDraw);
 end;
 
 procedure TfrmEditTag.lvwListSelectItem(Sender: TObject; Item: TListItem;

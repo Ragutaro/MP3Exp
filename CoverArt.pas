@@ -102,7 +102,7 @@ end;
 procedure TfrmCoverArt.lvwListCustomDrawItem(Sender: TCustomListView;
   Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
 begin
-  ut_DrawListItems(lvwList, Item, State, DefaultDraw);
+  lvwList.ColorizeLines(Item, State, DefaultDraw);
 end;
 
 procedure TfrmCoverArt.lvwListSelectItem(Sender: TObject; Item: TListItem;

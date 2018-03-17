@@ -18,7 +18,6 @@ uses
   procedure ut_CreateCoverArtBMPFromFile(const Filename: String; bmp : TBitmap);
   procedure ut_CalculateTotals(const iTotalTime, iTotalSize: Integer);
   function  ut_IsAlbum(const Path: String): Boolean;
-  procedure ut_DrawListItems(Sender: TCustomListView; Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
   function  ut_IsSymbolicLink(const sFolder: String): Boolean;
 
 
@@ -458,26 +457,6 @@ begin
     end;
   finally
     sl.Free;
-  end;
-end;
-
-procedure ut_DrawListItems(Sender: TCustomListView; Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
-begin
-  DefaultDraw := True;
-
-  with Sender.Canvas do
-  begin
-    Brush.Style := bsSolid;
-    if cdsHot in State then
-    begin
-      Brush.Color := clHover;
-      Font.Color  := clWindowText;
-      Font.Style  := [fsUnderline];
-    end
-    else
-    begin
-      Brush.Color := IfThenColor(Odd(Item.Index), clWindow, $00FEFAF8);
-    end;
   end;
 end;
 

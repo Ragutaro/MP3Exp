@@ -360,7 +360,7 @@ end;
 procedure TfrmMain.lvwListCustomDrawItem(Sender: TCustomListView;
   Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
 begin
-  ut_DrawListItems(lvwList, Item, State, DefaultDraw);
+  lvwList.ColorizeLines(Item, State, DefaultDraw);
 
   with lvwList.Canvas do
   begin
@@ -473,7 +473,7 @@ end;
 procedure TfrmMain.lvwSearchCustomDrawItem(Sender: TCustomListView;
   Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
 begin
-  ut_DrawListItems(lvwSearch, Item, State, DefaultDraw);
+  lvwSearch.ColorizeLines(Item, State, DefaultDraw);
 end;
 
 procedure TfrmMain.lvwSearchDblClick(Sender: TObject);
