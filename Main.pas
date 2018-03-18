@@ -1285,22 +1285,17 @@ end;
 
 procedure TfrmMain.tvwTreeCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
-var
-  bIsPlay : Boolean;
 begin
   if Node.Parent = nil then
     Exit;
 
-  DefaultDraw := True;
-  bIsPlay := False;
-
   with Sender.Canvas do
   begin
+    tvwTree.ColorizeNodes(Node, State, DefaultDraw);
     Brush.Style := bsSolid;
     //現在再生中のフォルダ
     if SameText(av.sMusicFolder + tvwTree.GetFullNodePath(Node), av.sCurrentDir) then
     begin
-      bIsPlay     := True;
     	Brush.Color := av.cNowPlay;
       Font.Color  := av.cNowPlayFont;
   	  Font.Style  := [fsBold];
@@ -1310,12 +1305,6 @@ begin
     begin
     	Brush.Color := av.cTotal;
       Font.Color  := av.cTotalFont;
-    end
-    else if (cdsHot in State) and (Not bIsPlay) then
-    begin
-      Brush.Color := $00FFF3E5;
-      Font.Color  := clWindowText;
-      Font.Style  := [fsUnderline];
     end;
   end;
 end;

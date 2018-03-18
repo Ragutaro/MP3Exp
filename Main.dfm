@@ -248,6 +248,9 @@ object frmMain: TfrmMain
         SortOrder = soAscending
         WrapAround = False
         DefaultSortOrder = soAscending
+        HoverColor = 16774117
+        HoverFontColor = clRed
+        UnevenColor = 16710392
       end
     end
     object tabTagDetail: TSpTBXTabSheet
@@ -343,6 +346,9 @@ object frmMain: TfrmMain
           SortOrder = soAscending
           WrapAround = False
           DefaultSortOrder = soAscending
+          HoverColor = 16774117
+          HoverFontColor = clTeal
+          UnevenColor = 16710392
         end
         object SpTBXSplitter2: TSpTBXSplitter
           Left = 0
@@ -399,7 +405,6 @@ object frmMain: TfrmMain
           Indent = 19
           PopupMenu = popTvw
           ReadOnly = True
-          RowSelect = True
           ShowRoot = False
           TabOrder = 0
           OnClick = tvwTreeClick
