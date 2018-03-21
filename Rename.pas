@@ -7,20 +7,21 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.StrUtils, IniFilesDX, System.IOUtils, System.Types,
-  Vcl.Filectrl, Vcl.StdCtrls, Vcl.ComCtrls, HideListView;
+  Vcl.Filectrl, Vcl.StdCtrls, Vcl.ComCtrls, HideListView, Vcl.ExtCtrls;
 
 type
   TfrmRename = class(TForm)
+    btnOK: TButton;
+    btnCancel: TButton;
+    Panel1: TPanel;
     Label1: TLabel;
     lblCurrentName: TLabel;
     GroupBox1: TGroupBox;
+    Label2: TLabel;
     radInputName: TRadioButton;
     edtInputName: TEdit;
     radCreateFromTag: TRadioButton;
-    btnOK: TButton;
-    btnCancel: TButton;
     edtFormat: TEdit;
-    Label2: TLabel;
     lblFormat: TStaticText;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -60,10 +61,12 @@ end;
 
 procedure TfrmRename.btnOKClick(Sender: TObject);
 begin
+  btnOK.Enabled := False;
   if radInputName.Checked then
     _RenameByInput
   else
     _RenameByTag;
+  btnOK.Enabled := True;
 end;
 
 procedure TfrmRename.FormActivate(Sender: TObject);

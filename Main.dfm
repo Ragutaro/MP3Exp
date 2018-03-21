@@ -245,12 +245,13 @@ object frmMain: TfrmMain
         OnColumnClick = lvwSearchColumnClick
         OnCustomDrawItem = lvwSearchCustomDrawItem
         OnDblClick = lvwSearchDblClick
-        SortOrder = soAscending
-        WrapAround = False
         DefaultSortOrder = soAscending
+        EvenColor = clWindow
         HoverColor = 16774117
         HoverFontColor = clRed
+        SortOrder = soAscending
         UnevenColor = 16710392
+        WrapAround = False
       end
     end
     object tabTagDetail: TSpTBXTabSheet
@@ -325,7 +326,7 @@ object frmMain: TfrmMain
               Caption = #31278#39006
             end>
           ColumnClick = False
-          DoubleBuffered = False
+          DoubleBuffered = True
           DragMode = dmAutomatic
           HotTrackStyles = [htHandPoint, htUnderlineHot]
           HoverTime = 0
@@ -343,12 +344,13 @@ object frmMain: TfrmMain
           OnDragDrop = lvwListDragDrop
           OnDragOver = lvwListDragOver
           OnKeyDown = lvwListKeyDown
-          SortOrder = soAscending
-          WrapAround = False
           DefaultSortOrder = soAscending
+          EvenColor = clWindow
           HoverColor = 16774117
           HoverFontColor = clTeal
+          SortOrder = soAscending
           UnevenColor = 16710392
+          WrapAround = False
         end
         object SpTBXSplitter2: TSpTBXSplitter
           Left = 0
@@ -398,11 +400,13 @@ object frmMain: TfrmMain
           Width = 169
           Height = 124
           Align = alClient
+          DoubleBuffered = True
           DragMode = dmAutomatic
           HideSelection = False
           HotTrack = True
           Images = pngTvw
           Indent = 19
+          ParentDoubleBuffered = False
           PopupMenu = popTvw
           ReadOnly = True
           ShowRoot = False
@@ -419,6 +423,8 @@ object frmMain: TfrmMain
             000000000001054D0075007300690063002E0000000100000001000000FFFFFF
             FFFFFFFFFF010000000000000000000000010850006C00610079006C00690073
             007400}
+          HoverColor = 16774117
+          HoverFontColor = clTeal
           ExplicitHeight = 132
         end
         object Panel1: TPanel
@@ -5745,12 +5751,6 @@ object frmMain: TfrmMain
       Caption = #12501#12457#12523#12480#12398#20316#25104'...'
       ImageIndex = 6
       OnClick = popTvwCreateFolderClick
-    end
-    object popTvwCreateAlbum: TSpTBXItem
-      Caption = #12450#12523#12496#12512#12398#20316#25104'...'
-      Enabled = False
-      ImageIndex = 8
-      OnClick = popTvwCreateAlbumClick
     end
     object popTvwMakeSSymLink: TSpTBXItem
       Caption = #12471#12531#12508#12522#12483#12463#12522#12531#12463#12398#20316#25104'...'

@@ -92,6 +92,10 @@ object frmEditTag: TfrmEditTag
     SortOrder = soAscending
     WrapAround = False
     DefaultSortOrder = soAscending
+    HoverColor = 16774117
+    HoverFontColor = clTeal
+    UnevenColor = 16710392
+    EvenColor = clWindow
   end
   object Panel2: TPanel
     Left = 8
@@ -625,6 +629,10 @@ object frmEditTag: TfrmEditTag
         SortOrder = soAscending
         WrapAround = False
         DefaultSortOrder = soAscending
+        HoverColor = 16774117
+        HoverFontColor = clTeal
+        UnevenColor = 16710392
+        EvenColor = clWindow
       end
     end
     object SpTBXTabSheet2: TSpTBXTabSheet

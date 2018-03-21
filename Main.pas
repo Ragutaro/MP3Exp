@@ -84,7 +84,6 @@ type
     popTvwNewPlaylist: TSpTBXItem;
     popLvwAddToPlaylist: TSpTBXSubmenuItem;
     popTvwSendToMP3Gain: TSpTBXItem;
-    popTvwCreateAlbum: TSpTBXItem;
     ScrollBox1: TScrollBox;
     imgLyrics: TImage;
     popTvwAdd2iTunes: TSpTBXItem;
@@ -164,7 +163,6 @@ type
       State: TDragState; var Accept: Boolean);
     procedure lvwListDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure popTvwSendToMP3GainClick(Sender: TObject);
-    procedure popTvwCreateAlbumClick(Sender: TObject);
     procedure ScrollBox1Resize(Sender: TObject);
     procedure popTvwAdd2iTunesClick(Sender: TObject);
     procedure popLvwAdd2iTunesClick(Sender: TObject);
@@ -716,33 +714,6 @@ begin
   ShellExecuteSimple(GetApplicationPath + 'iTunes.bat');
 end;
 
-procedure TfrmMain.popTvwCreateAlbumClick(Sender: TObject);
-//var
-//  n : TTreeNode;
-//  sNewName, sNewPath : String;
-begin
-//  n := tvwTree.Selected;
-//  if n = nil then
-//    Exit;
-//
-//  sNewName := InputBox('アルバムの作成', 'アルバム名を入力して下さい。', '');
-//  if sNewName <> '' then
-//  begin
-//    if IsValidFileName(sNewName) then
-//    begin
-//      sNewPath := Format('%s%s\%s', [av.sMusicFolder, tvwTree.GetFullNodePath(n), sNewName]);
-//      if TDirectory.Exists(sNewPath) then
-//        MessageDlg('同じ名称のアルバムが存在します。変更して下さい。', '', mtWarning, [mbOK])
-//      else
-//      begin
-//        CreateFolder(sNewPath);
-//        tvwTree.AddChildNode(sNewName, ICO_MUSIC_ALBUM_CLOSE, ICO_MUSIC_ALBUM_OPEN);
-//      end;
-//    end;
-//    n.AlphaSort(True);
-//  end;
-end;
-
 procedure TfrmMain.popTvwCreateFolderClick(Sender: TObject);
 var
   n : TTreeNode;
@@ -988,7 +959,6 @@ procedure TfrmMain.popTvwPopup(Sender: TObject);
 begin
   popTvwRenameFolder.Visible        := True;
   popTvwCreateFolder.Visible        := True;
-  popTvwCreateAlbum.Visible         := True;
   SpTBXSubmenuItem1.Visible         := True;
   popTvwNewPlaylist.Visible         := True;
   popTvwSendToMP3Gain.Visible       := True;
@@ -1002,7 +972,6 @@ begin
     ICO_MUSIC_ROOT : //Root
       begin
         popTvwRenameFolder.Visible  := False;
-        popTvwCreateAlbum.Visible   := False;
         popTvwDelete.Visible        := False;
         popTvwNewPlaylist.Visible   := False;
         popTvwAdd2iTunes.Visible    := False;
@@ -1016,7 +985,6 @@ begin
     ICO_MUSIC_ALBUM_CLOSE :
       begin
         popTvwCreateFolder.Visible  := False;
-        popTvwCreateAlbum.Visible   := False;
         popTvwNewPlaylist.Visible   := False;
         popTvwReload.Visible        := False;
         popTvwMakeSSymLink.Visible  := False;
@@ -1029,7 +997,6 @@ begin
     ICO_MUSIC_ALBUM_CLOSE_SYM :
       begin
         popTvwCreateFolder.Visible  := False;
-        popTvwCreateAlbum.Visible   := False;
         popTvwNewPlaylist.Visible   := False;
         popTvwReload.Visible        := False;
         popTvwMakeSSymLink.Visible  := False;
@@ -1038,7 +1005,6 @@ begin
       begin
         popTvwRenameFolder.Visible  := False;
         popTvwCreateFolder.Visible  := False;
-        popTvwCreateAlbum.Visible   := False;
         SpTBXSubmenuItem1.Visible   := False;
         popTvwSendToMP3Gain.Visible := False;
         popTvwAdd2iTunes.Visible    := False;
@@ -1051,7 +1017,6 @@ begin
     ICO_PLAYLIST_FILE :   //Playlist
       begin
         popTvwCreateFolder.Visible  := False;
-        popTvwCreateAlbum.Visible   := False;
         SpTBXSubmenuItem1.Visible   := False;
         popTvwNewPlaylist.Visible   := False;
         popTvwSendToMP3Gain.Visible := False;
