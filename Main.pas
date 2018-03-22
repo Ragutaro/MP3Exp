@@ -290,7 +290,7 @@ begin
       if ContainsText(av.sValidExtentions, sExt) then
         RenameFile(sSource, sTarget + '\' + sName)
       else
-        MessageDlg(sName + 'は再生できない種類のファイルです。', '', mtWarning, [mbOK]);
+        ShowMessage(sName + 'は再生できない種類のファイルです。', mtError);
       Application.ProcessMessages;
     end;
   end;
@@ -527,7 +527,7 @@ var
   i, iTotal : Integer;
   dTotal : Double;
 begin
-  if MessageDlg(MSG, '', mtConfirmation, [mbYes, mbNo]) = mrNo then
+  if MessageDlg(MSG, mtWarning) = mrNo then
     Exit;
 
   lvwList.Items.BeginUpdate;
@@ -730,7 +730,7 @@ begin
     begin
       sNewPath := Format('%s%s\%s', [av.sMusicFolder, tvwTree.GetFullNodePath(n), sNewName]);
       if TDirectory.Exists(sNewPath) then
-        MessageDlg('同じ名称のフォルダが存在します。変更して下さい。', '', mtWarning, [mbOK])
+        ShowMessage('同じ名称のフォルダが存在します。変更して下さい。', mtError)
       else
       begin
         CreateFolder(sNewPath);
@@ -762,7 +762,7 @@ begin
       begin
         s := av.sMusicFolder + tvwTree.GetFullNodePath(n);
         //削除処理
-        if MessageDlg(C_DelFolder, '', mtConfirmation, [mbYes, mbNo]) = mrYes then
+        if MessageDlg(C_DelFolder, mtWarning) = mrYes then
         begin
           DeleteFolder(s);
           n.Delete;
@@ -770,7 +770,7 @@ begin
       end;
     ICO_MUSIC_FOLDER_CLOSE_SYM, ICO_MUSIC_ALBUM_CLOSE_SYM :
       begin
-        if MessageDlg(C_DelSymLink, '', mtConfirmation, [mbYes, mbNo]) = mrYes then
+        if MessageDlg(C_DelSymLink, mtWarning) = mrYes then
         begin
           sl := TStringList.Create;
           try
@@ -788,7 +788,7 @@ begin
       end;
     ICO_PLAYLIST_FILE :
       begin
-        if MessageDlg(C_DelList, '', mtConfirmation, [mbYes, mbNo]) = mrYes then
+        if MessageDlg(C_DelList, mtWarning) = mrYes then
         begin
           DeleteFile(Format('%s\%s.m3u', [av.sPlaylistDir, tvwTree.Selected.Text]));
           n.Delete;
@@ -918,7 +918,7 @@ var
 begin
   if tvwTree.Selected.ImageIndex = ICO_PLAYLIST_FILE then
   begin
-    MessageDlg('Playlist再生時はシャッフルできません。', '', mtWarning, [mbOK]);
+    ShowMessage('Playlist再生時はシャッフルできません。', mtError);
     Exit;
   end;
 

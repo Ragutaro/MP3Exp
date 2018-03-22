@@ -738,7 +738,7 @@ var
   sFilename : String;
   i : Integer;
 begin
-  if MessageDlg('全てのアルバムアートを削除します。よろしいですか？', '', mtConfirmation, [mbYes, mbNo]) = mrNo then
+  if MessageDlg('全てのアルバムアートを削除します。よろしいですか？', mtConfirmation) = mrNo then
     Exit;
 
   for i := 0 to lvwList.Items.Count-1 do
@@ -773,11 +773,11 @@ var
 begin
   if lvwList.SelCount > 1 then
   begin
-    ShowMessage('複数選択時は、特定のアルバムアートを削除できません。');
+    ShowMessage('複数選択時は、特定のアルバムアートを削除できません。', mtError);
   	Exit;
   end;
 
-  if MessageDlg('選択しているアルバムアートを削除します。よろしいですか？', '', mtConfirmation, [mbYes, mbNo]) = mrNo then
+  if MessageDlg('選択しているアルバムアートを削除します。よろしいですか？', mtConfirmation) = mrNo then
     Exit;
 
   itemCover := TlvwCover(lvwCover.Selected);
@@ -946,7 +946,7 @@ begin
   Result := '';
   hnd := FindWindow('RBWindow', 'Lyrics Master');
   if hnd = 0 then
-    ShowMessage('Lyrics Masterのウィンドウが見つかりません。')
+    ShowMessage('Lyrics Masterのウィンドウが見つかりません。', mtError)
   else
   begin
     hnd := FindWindowEx(hnd, 0, 'RICHEDIT50W', nil);

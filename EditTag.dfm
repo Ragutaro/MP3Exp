@@ -89,13 +89,13 @@ object frmEditTag: TfrmEditTag
     OnCustomDrawItem = lvwListCustomDrawItem
     OnCreateItemClass = lvwListCreateItemClass
     OnSelectItem = lvwListSelectItem
-    SortOrder = soAscending
-    WrapAround = False
     DefaultSortOrder = soAscending
+    EvenColor = clWindow
     HoverColor = 16774117
     HoverFontColor = clTeal
+    SortOrder = soAscending
     UnevenColor = 16710392
-    EvenColor = clWindow
+    WrapAround = False
   end
   object Panel2: TPanel
     Left = 8
@@ -231,6 +231,7 @@ object frmEditTag: TfrmEditTag
       OnChange = cmbData1Change
       OnDropDown = cmbData1DropDown
       OnSelect = cmbData1Select
+      ItemWidth = 0
     end
     object cmbData2: THideComboBox
       Left = 8
@@ -243,6 +244,7 @@ object frmEditTag: TfrmEditTag
       TabOrder = 2
       OnChange = cmbData2Change
       OnDropDown = cmbData2DropDown
+      ItemWidth = 0
     end
     object cmbData3: THideComboBox
       Left = 270
@@ -255,6 +257,7 @@ object frmEditTag: TfrmEditTag
       TabOrder = 3
       OnChange = cmbData3Change
       OnDropDown = cmbData3DropDown
+      ItemWidth = 0
     end
     object cmbData4: THideComboBox
       Left = 270
@@ -268,6 +271,7 @@ object frmEditTag: TfrmEditTag
       OnChange = cmbData4Change
       OnDropDown = cmbData4DropDown
       OnSelect = cmbData4Select
+      ItemWidth = 0
     end
     object cmbData5: THideComboBox
       Left = 360
@@ -279,6 +283,7 @@ object frmEditTag: TfrmEditTag
       DropDownCount = 20
       TabOrder = 5
       OnChange = cmbData5Change
+      ItemWidth = 0
     end
     object cmbData6: THideComboBox
       Left = 445
@@ -290,6 +295,7 @@ object frmEditTag: TfrmEditTag
       DropDownCount = 20
       TabOrder = 6
       OnChange = cmbData6Change
+      ItemWidth = 0
     end
     object cmbData7: THideComboBox
       Left = 270
@@ -302,6 +308,7 @@ object frmEditTag: TfrmEditTag
       TabOrder = 7
       OnChange = cmbData7Change
       OnDropDown = cmbData7DropDown
+      ItemWidth = 0
     end
     object cmbData8: THideComboBox
       Left = 270
@@ -314,6 +321,7 @@ object frmEditTag: TfrmEditTag
       TabOrder = 8
       OnChange = cmbData8Change
       OnDropDown = cmbData8DropDown
+      ItemWidth = 0
     end
     object cmbData9: THideComboBox
       Left = 534
@@ -326,6 +334,7 @@ object frmEditTag: TfrmEditTag
       TabOrder = 9
       OnChange = cmbData9Change
       OnDropDown = cmbData9DropDown
+      ItemWidth = 0
     end
     object cmbData10: THideComboBox
       Left = 534
@@ -338,6 +347,7 @@ object frmEditTag: TfrmEditTag
       TabOrder = 10
       OnChange = cmbData10Change
       OnDropDown = cmbData10DropDown
+      ItemWidth = 0
     end
     object cmbData11: THideComboBox
       Left = 534
@@ -350,6 +360,7 @@ object frmEditTag: TfrmEditTag
       TabOrder = 11
       OnChange = cmbData11Change
       OnDropDown = cmbData11DropDown
+      ItemWidth = 0
     end
     object cmbData12: THideComboBox
       Left = 534
@@ -361,6 +372,7 @@ object frmEditTag: TfrmEditTag
       DropDownCount = 20
       TabOrder = 12
       OnChange = cmbData12Change
+      ItemWidth = 0
     end
     object grpTitle: TGroupBox
       Left = 12
@@ -626,13 +638,13 @@ object frmEditTag: TfrmEditTag
         OnCustomDrawItem = lvwCoverCustomDrawItem
         OnCreateItemClass = lvwCoverCreateItemClass
         OnDblClick = lvwCoverDblClick
-        SortOrder = soAscending
-        WrapAround = False
         DefaultSortOrder = soAscending
+        EvenColor = clWindow
         HoverColor = 16774117
         HoverFontColor = clTeal
+        SortOrder = soAscending
         UnevenColor = 16710392
-        EvenColor = clWindow
+        WrapAround = False
       end
     end
     object SpTBXTabSheet2: TSpTBXTabSheet

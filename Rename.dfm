@@ -4,7 +4,7 @@ object frmRename: TfrmRename
   BorderIcons = [biSystemMenu]
   BorderStyle = bsToolWindow
   Caption = #12501#12449#12452#12523#21517#12398#22793#26356
-  ClientHeight = 339
+  ClientHeight = 338
   ClientWidth = 513
   Color = clBtnFace
   Font.Charset = SHIFTJIS_CHARSET
@@ -22,22 +22,21 @@ object frmRename: TfrmRename
   OnKeyDown = FormKeyDown
   DesignSize = (
     513
-    339)
+    338)
   PixelsPerInch = 96
   TextHeight = 18
   object btnOK: TButton
-    Left = 337
-    Top = 306
+    Left = 347
+    Top = 305
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     TabOrder = 0
     OnClick = btnOKClick
-    ExplicitTop = 297
   end
   object btnCancel: TButton
-    Left = 422
+    Left = 430
     Top = 306
     Width = 75
     Height = 25
@@ -45,7 +44,6 @@ object frmRename: TfrmRename
     Caption = #12461#12515#12531#12475#12523
     TabOrder = 1
     OnClick = btnCancelClick
-    ExplicitTop = 297
   end
   object Panel1: TPanel
     Left = 0

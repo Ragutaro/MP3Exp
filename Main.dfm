@@ -328,6 +328,7 @@ object frmMain: TfrmMain
           ColumnClick = False
           DoubleBuffered = True
           DragMode = dmAutomatic
+          HideSelection = False
           HotTrackStyles = [htHandPoint, htUnderlineHot]
           HoverTime = 0
           MultiSelect = True
