@@ -7,7 +7,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.StrUtils, IniFilesDX, System.IOUtils, System.Types,
-  Vcl.Filectrl, Vcl.StdCtrls, Vcl.ComCtrls, HideListView, Vcl.ExtCtrls;
+  Vcl.Filectrl, Vcl.StdCtrls, Vcl.ComCtrls, HideListView, Vcl.ExtCtrls,
+  Vcl.Imaging.pngimage;
 
 type
   TfrmRename = class(TForm)
@@ -23,6 +24,7 @@ type
     radCreateFromTag: TRadioButton;
     edtFormat: TEdit;
     lblFormat: TStaticText;
+    imgNext: TImage;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure radInputNameClick(Sender: TObject);
@@ -31,6 +33,7 @@ type
     procedure btnOKClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure imgNextClick(Sender: TObject);
   private
     { Private 宣言 }
     procedure _LoadSettings;
@@ -101,6 +104,23 @@ procedure TfrmRename.FormKeyDown(Sender: TObject; var Key: Word;
 begin
   Case Key of
     VK_ESCAPE : Close;
+  end;
+end;
+
+procedure TfrmRename.imgNextClick(Sender: TObject);
+var
+  item : TListItemEx;
+  s : String;
+begin
+  item := TListItemEx(frmMain.lvwList.Selected);
+  if (item <> nil) and (item.Index < frmMain.lvwList.Items.Count-2) then
+  begin
+    item.Selected := False;
+    item := TListItemEx(frmMain.lvwList.Items[item.Index+1]);
+    s := ExtractFileBody(item.sFullPath);
+    lblCurrentName.Caption := s;
+    edtInputName.Text := s;
+    item.Selected := True;
   end;
 end;
 

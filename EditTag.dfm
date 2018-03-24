@@ -448,16 +448,16 @@ object frmEditTag: TfrmEditTag
     Width = 348
     Height = 261
     Anchors = [akLeft, akRight, akBottom]
-    ActiveTabIndex = 0
+    ActiveTabIndex = 1
     TabAutofit = True
     HiddenItems = <>
     object tabLyric: TSpTBXTabItem
       Caption = #27468#35422
-      Checked = True
       CustomWidth = 114
     end
     object tabCover: TSpTBXTabItem
       Caption = #12450#12523#12496#12512#12450#12540#12488
+      Checked = True
       CustomWidth = 114
     end
     object tabEditCover: TSpTBXTabItem
@@ -560,6 +560,87 @@ object frmEditTag: TfrmEditTag
         OnClick = btnRefreshCoverArtClick
       end
     end
+    object SpTBXTabSheet2: TSpTBXTabSheet
+      Left = 0
+      Top = 23
+      Width = 348
+      Height = 238
+      Caption = #27468#35422
+      ImageIndex = -1
+      ExplicitLeft = 20
+      ExplicitTop = 28
+      ExplicitWidth = 224
+      ExplicitHeight = 233
+      DesignSize = (
+        348
+        238)
+      TabItem = 'tabLyric'
+      object lblLyricsInfo: TLabel
+        Left = 151
+        Top = 202
+        Width = 186
+        Height = 18
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        AutoSize = False
+      end
+      object memLyrics: TMemo
+        Left = 8
+        Top = 12
+        Width = 329
+        Height = 181
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        ScrollBars = ssVertical
+        TabOrder = 0
+      end
+      object toolLyrics: TSpTBXToolWindow
+        Left = 7
+        Top = 195
+        Width = 138
+        Height = 34
+        Caption = 'toolLyrics'
+        Anchors = [akLeft, akBottom]
+        TabOrder = 1
+        ClientAreaHeight = 34
+        ClientAreaWidth = 138
+        object SpTBXToolbar1: TSpTBXToolbar
+          Left = 4
+          Top = 4
+          Width = 130
+          Height = 30
+          Images = imgLyric
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+          Caption = 'SpTBXToolbar1'
+          object tbrSaveLyrics: TSpTBXItem
+            Caption = #27468#35422#12384#12369#12434#26356#26032
+            Hint = #27468#35422#12384#12369#12434#26356#26032
+            ImageIndex = 1
+            OnClick = tbrSaveLyricsClick
+          end
+          object SpTBXSeparatorItem1: TSpTBXSeparatorItem
+          end
+          object tbrGetLyrics: TSpTBXItem
+            Caption = 'Lyrics Master '#12391#27468#35422#12434#26908#32034#12377#12427'...'
+            Hint = 'Lyrics Master '#12391#27468#35422#12434#26908#32034#12377#12427'...'
+            ImageIndex = 0
+            OnClick = tbrGetLyricsClick
+          end
+          object tbrGetNextLyrics: TSpTBXItem
+            Caption = 'Lyrics Master '#12391#27425#12398#26354#12398#27468#35422#12434#26908#32034#12377#12427'...'
+            Hint = 'Lyrics Master '#12391#27425#12398#26354#12398#27468#35422#12434#26908#32034#12377#12427'...'
+            ImageIndex = 2
+            OnClick = tbrGetNextLyricsClick
+          end
+          object tbrSaveCurrentLyrics: TSpTBXItem
+            Caption = 'Lyrics Master '#12391#34920#31034#20013#12398#27468#35422#12434#21462#24471#12375#12390#20445#23384#12377#12427
+            Hint = 'Lyrics Master '#12391#34920#31034#20013#12398#27468#35422#12434#21462#24471#12375#12390#20445#23384#12377#12427
+            ImageIndex = 3
+            OnClick = tbrSaveCurrentLyricsClick
+          end
+        end
+      end
+    end
     object SpTBXTabSheet1: TSpTBXTabSheet
       Left = 0
       Top = 23
@@ -647,91 +728,10 @@ object frmEditTag: TfrmEditTag
         WrapAround = False
       end
     end
-    object SpTBXTabSheet2: TSpTBXTabSheet
-      Left = 0
-      Top = 23
-      Width = 348
-      Height = 238
-      Caption = #27468#35422
-      ImageIndex = -1
-      ExplicitLeft = 20
-      ExplicitTop = 28
-      ExplicitWidth = 224
-      ExplicitHeight = 233
-      DesignSize = (
-        348
-        238)
-      TabItem = 'tabLyric'
-      object lblLyricsInfo: TLabel
-        Left = 151
-        Top = 202
-        Width = 186
-        Height = 18
-        Anchors = [akLeft, akTop, akRight, akBottom]
-        AutoSize = False
-      end
-      object memLyrics: TMemo
-        Left = 8
-        Top = 12
-        Width = 329
-        Height = 181
-        Anchors = [akLeft, akTop, akRight, akBottom]
-        ScrollBars = ssVertical
-        TabOrder = 0
-      end
-      object toolLyrics: TSpTBXToolWindow
-        Left = 7
-        Top = 195
-        Width = 138
-        Height = 34
-        Caption = 'toolLyrics'
-        Anchors = [akLeft, akBottom]
-        TabOrder = 1
-        ClientAreaHeight = 34
-        ClientAreaWidth = 138
-        object SpTBXToolbar1: TSpTBXToolbar
-          Left = 4
-          Top = 4
-          Width = 130
-          Height = 30
-          Images = imgLyric
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 0
-          Caption = 'SpTBXToolbar1'
-          object tbrSaveLyrics: TSpTBXItem
-            Caption = #27468#35422#12384#12369#12434#26356#26032
-            Hint = #27468#35422#12384#12369#12434#26356#26032
-            ImageIndex = 1
-            OnClick = tbrSaveLyricsClick
-          end
-          object SpTBXSeparatorItem1: TSpTBXSeparatorItem
-          end
-          object tbrGetLyrics: TSpTBXItem
-            Caption = 'Lyrics Master '#12391#27468#35422#12434#26908#32034#12377#12427'...'
-            Hint = 'Lyrics Master '#12391#27468#35422#12434#26908#32034#12377#12427'...'
-            ImageIndex = 0
-            OnClick = tbrGetLyricsClick
-          end
-          object tbrGetNextLyrics: TSpTBXItem
-            Caption = 'Lyrics Master '#12391#27425#12398#26354#12398#27468#35422#12434#26908#32034#12377#12427'...'
-            Hint = 'Lyrics Master '#12391#27425#12398#26354#12398#27468#35422#12434#26908#32034#12377#12427'...'
-            ImageIndex = 2
-            OnClick = tbrGetNextLyricsClick
-          end
-          object tbrSaveCurrentLyrics: TSpTBXItem
-            Caption = 'Lyrics Master '#12391#34920#31034#20013#12398#27468#35422#12434#21462#24471#12375#12390#20445#23384#12377#12427
-            Hint = 'Lyrics Master '#12391#34920#31034#20013#12398#27468#35422#12434#21462#24471#12375#12390#20445#23384#12377#12427
-            ImageIndex = 3
-            OnClick = tbrSaveCurrentLyricsClick
-          end
-        end
-      end
-    end
   end
   object panHelp: TPanel
-    Left = 594
-    Top = 32
+    Left = 374
+    Top = 28
     Width = 300
     Height = 75
     Caption = 'panHelp'
