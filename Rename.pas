@@ -8,13 +8,13 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.StrUtils, IniFilesDX, System.IOUtils, System.Types,
   Vcl.Filectrl, Vcl.StdCtrls, Vcl.ComCtrls, HideListView, Vcl.ExtCtrls,
-  Vcl.Imaging.pngimage;
+  Vcl.Imaging.pngimage, HideBack, Vcl.Samples.Spin;
 
 type
   TfrmRename = class(TForm)
     btnOK: TButton;
     btnCancel: TButton;
-    Panel1: TPanel;
+    HideBack1: THideBack;
     Label1: TLabel;
     lblCurrentName: TLabel;
     GroupBox1: TGroupBox;
@@ -24,7 +24,7 @@ type
     radCreateFromTag: TRadioButton;
     edtFormat: TEdit;
     lblFormat: TStaticText;
-    imgNext: TImage;
+    spnUpDown: TSpinButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure radInputNameClick(Sender: TObject);
@@ -33,7 +33,8 @@ type
     procedure btnOKClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure imgNextClick(Sender: TObject);
+    procedure spnUpDownDownClick(Sender: TObject);
+    procedure spnUpDownUpClick(Sender: TObject);
   private
     { Private 宣言 }
     procedure _LoadSettings;
@@ -107,7 +108,21 @@ begin
   end;
 end;
 
-procedure TfrmRename.imgNextClick(Sender: TObject);
+procedure TfrmRename.radCreateFromTagClick(Sender: TObject);
+begin
+  edtFormat.Enabled    := True;
+  edtInputName.Enabled := False;
+  edtFormat.SetFocus;
+end;
+
+procedure TfrmRename.radInputNameClick(Sender: TObject);
+begin
+  edtInputName.Enabled := True;
+  edtFormat.Enabled    := False;
+  edtInputName.SetFocus;
+end;
+
+procedure TfrmRename.spnUpDownDownClick(Sender: TObject);
 var
   item : TListItemEx;
   s : String;
@@ -124,18 +139,21 @@ begin
   end;
 end;
 
-procedure TfrmRename.radCreateFromTagClick(Sender: TObject);
+procedure TfrmRename.spnUpDownUpClick(Sender: TObject);
+var
+  item : TListItemEx;
+  s : String;
 begin
-  edtFormat.Enabled    := True;
-  edtInputName.Enabled := False;
-  edtFormat.SetFocus;
-end;
-
-procedure TfrmRename.radInputNameClick(Sender: TObject);
-begin
-  edtInputName.Enabled := True;
-  edtFormat.Enabled    := False;
-  edtInputName.SetFocus;
+  item := TListItemEx(frmMain.lvwList.Selected);
+  if (item <> nil) and (item.Index > 0) then
+  begin
+    item.Selected := False;
+    item := TListItemEx(frmMain.lvwList.Items[item.Index-1]);
+    s := ExtractFileBody(item.sFullPath);
+    lblCurrentName.Caption := s;
+    edtInputName.Text := s;
+    item.Selected := True;
+  end;
 end;
 
 procedure TfrmRename._LoadSettings;

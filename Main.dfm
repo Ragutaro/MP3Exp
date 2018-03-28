@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 326
-  Top = 152
+  Left = 1370
+  Top = 380
   Caption = 'MP3 Explorer'
   ClientHeight = 282
   ClientWidth = 497
@@ -156,10 +156,6 @@ object frmMain: TfrmMain
     ActiveTabIndex = 0
     Images = pngTvw
     TabAutofit = True
-    ExplicitLeft = 21
-    ExplicitTop = 52
-    ExplicitWidth = 441
-    ExplicitHeight = 229
     HiddenItems = <>
     object tabMusic: TSpTBXTabItem
       Caption = #27005#26354#12398#36984#25246
@@ -279,9 +275,6 @@ object frmMain: TfrmMain
       Height = 222
       Caption = #27005#26354#12398#36984#25246
       ImageIndex = 2
-      ExplicitTop = 24
-      ExplicitWidth = 546
-      ExplicitHeight = 199
       TabItem = 'tabMusic'
       object splVert: TSpTBXSplitter
         Left = 171
@@ -426,7 +419,6 @@ object frmMain: TfrmMain
             007400}
           HoverColor = 16774117
           HoverFontColor = clTeal
-          ExplicitHeight = 132
         end
         object Panel1: TPanel
           Left = 0
@@ -1084,7 +1076,7 @@ object frmMain: TfrmMain
     Left = 42
     Top = 214
     Bitmap = {
-      494C010102000500040064005A00FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010102000500100064005A00FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000900100005A00000001002000000000008032
       0200000000000000000000000000000000000000000200000002000000020000
       0003000000030000000300000004000000040000000400000004000000040000

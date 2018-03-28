@@ -723,7 +723,7 @@ begin
   if n = nil then
     Exit;
 
-  sNewName := InputBoxEx('フォルダの作成', 'フォルダ名を入力して下さい。', '', [ibFileName]);
+  sNewName := InputBox('フォルダの作成', 'フォルダ名を入力して下さい。', '', [ibFileName]);
   if sNewName <> '' then
   begin
     if IsValidFileName(sNewName) then
@@ -859,7 +859,7 @@ var
   sl : TStringList;
   s, sFile : String;
 begin
-  s := InputBoxEx('Playlistの作成', 'Playlistの名称を入力して下さい。', '', [ibFileName]);
+  s := InputBox('Playlistの作成', 'Playlistの名称を入力して下さい。', '', [ibFileName]);
   if (s <> '') and IsValidFileName(s) then
   begin
     n := tvwTree.Items.AddChild(tvwTree.Selected, s);
@@ -1057,11 +1057,12 @@ begin
   if n = nil then
     Exit;
 
-  sNewName := InputBoxEx('名称の変更', '新しい名称を入力して下さい。', n.Text, [ibFileName]);
+  sNewName := InputBox('名称の変更', '新しい名称を入力して下さい。', n.Text, [ibFileName]);
   if (sNewName <> '') and (sNewName <> n.Text) then
   begin
     Case tvwTree.Selected.ImageIndex of
-      ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_ALBUM_CLOSE, ICO_MUSIC_FOLDER_CLOSE_SYM, ICO_MUSIC_ALBUM_CLOSE_SYM : //Folder
+      ICO_MUSIC_FOLDER_CLOSE, ICO_MUSIC_ALBUM_CLOSE,
+      ICO_MUSIC_FOLDER_CLOSE_SYM, ICO_MUSIC_ALBUM_CLOSE_SYM : //Folder
         begin
           sOldPath := av.sMusicFolder + tvwTree.GetFullNodePath(n);
           sNewPath := av.sMusicFolder + tvwTree.GetFullNodePath(n.Parent) + '\' + sNewName;

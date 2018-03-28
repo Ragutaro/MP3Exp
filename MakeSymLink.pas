@@ -8,16 +8,16 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.StrUtils, IniFilesDX, System.IOUtils, System.Types,
   Vcl.Filectrl, SpTBXEditors, Vcl.StdCtrls, Vcl.ComCtrls, HideTreeView,
-  untOpenFolder, Vcl.ExtCtrls;
+  untOpenFolder, Vcl.ExtCtrls, HideBack;
 
 type
   TfrmMakeSymLink = class(TForm)
     btnOk: TButton;
     btnCancel: TButton;
-    Panel1: TPanel;
-    Label1: TLabel;
-    edtNewFolder: TEdit;
     fraMusic: TfraOpenFolder;
+    edtNewFolder: TEdit;
+    HideBack1: THideBack;
+    Label1: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btnOkClick(Sender: TObject);

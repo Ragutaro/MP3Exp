@@ -10,7 +10,7 @@ uses
   Rename in 'Rename.pas' {frmRename},
   CoverArt in 'CoverArt.pas' {frmCoverArt},
   MakeSymLink in 'MakeSymLink.pas' {frmMakeSymLink},
-  untOpenFolder in '..\_Component\untOpenFolder.pas' {fraOpenFolder: TFrame};
+  untOpenFolder in '..\..\Components\untOpenFolder.pas' {fraOpenFolder: TFrame};
 
 {$R *.res}
 
