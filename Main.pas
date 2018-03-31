@@ -1387,11 +1387,11 @@ begin
         traPosition.Enabled := True;
         timPosition.Enabled := True;
         lvwList.Refresh;
+        Application.ProcessMessages;
         _LoadAlbumCover;
         av.sCurrentDir := ExtractFileDir(av.sCurrentSong);
         _SetColors;
         tvwTree.Repaint;
-        lvwList.Repaint;
       end;
     wmppsStopped :
       begin
@@ -1473,11 +1473,12 @@ end;
 
 procedure TfrmMain._ListMediaFiles;
 var
+  t : TTags;
   n : TTreeNode;
   m : IWMPMedia;
   item : TListItemEx;
   sr : TSearchRec;
-  sRootDir, sExt, sFilename : String;
+  sRootDir, sExt, sFilename, sTitle, sSubTitle : String;
   iBit, iSize, iTotal : Integer;
   dTotal : Double;
   bMedia : Boolean;
@@ -1495,11 +1496,25 @@ begin
         if (sr.Name <> '.') and (sr.Name <> '..') and ContainsText(av.sValidExtentions, sExt) then
         begin
           sFilename := sRootDir + sr.Name;
+          //タイトル、サブタイトル、拡張子を取得
+          t := TTags.Create;
+          try
+            t.LoadFromFile(sFilename);
+            sTitle    := StrDef(t.GetTag(TAG_TITLE), ExtractFileBody(sr.Name));
+            sSubTitle := t.GetTag(TAG_SUBTITLE);
+            if sSubTitle <> '' then
+              sTitle := Format('%s ～%s～', [sTitle, sSubTitle]);
+            sExt := ExtractFileExt(sFilename);
+          finally
+            t.Free;
+          end;
+          //bps、ファイルサイズを取得
           m := wmp.newMedia(sFilename);
           iBit  := StrToIntDef(m.getItemInfo('Bitrate'), 0) div 1000;
           iSize := StrToIntDef(m.getItemInfo('Filesize'), 0) div 1000;
+          //リストに追加
           item  := TListItemEx(lvwList.Items.Add);
-          item.Caption := StrDef(m.getItemInfo('Title'), ExtractFileBody(sr.Name));
+          item.Caption := sTitle;
           item.SubItems.Add(m.durationString);
           item.SubItems.Add(IntToStr(iBit) + 'K');
           item.SubItems.Add(FormatFloat('#,###', iSize) + 'KB');
@@ -1514,6 +1529,7 @@ begin
       FindClose(sr);
     end;
     ut_CalculateTotals(Trunc(dTotal), iTotal);
+
     if bMedia then
     begin
       n := tvwTree.Selected;
@@ -1608,7 +1624,7 @@ var
   t : TTags;
   bmp : TBitmap;
   i : Integer;
-  s : String;
+  s, sTag, sTitle, sSubTitle : String;
 begin
   t := TTags.Create;
   bmp := TBitmap.Create;
@@ -1622,14 +1638,23 @@ begin
       except
         //
       end;
-      lblTitle.Caption    := StrDef(t.GetTag(TAG_TITLE),  '<No Title>');
+      sTitle := StrDef(t.GetTag(TAG_TITLE),  '<No Title>');
+      sSubTitle := StrDef(t.GetTag(TAG_SUBTITLE), '');
+      if sSubTitle <> '' then
+        sTitle := Format('%s ～%s～', [sTitle, sSubTitle]);
+      lblTitle.Caption    := sTitle;// StrDef(t.GetTag(TAG_TITLE),  '<No Title>');
       lblArtist.Caption   := StrDef(t.GetTag(TAG_ARTIST), '<No Artist>');
       lblAlbumYear.Caption := StrDef(t.GetTag(TAG_ALBUM), '<No Album>');;
-      s := t.GetTag(TAG_YEAR);
+
+      //年  まずは ReleaseDateを優先的に読み込み、値が無い場合に Year を読み込む
+      s := StrDef(t.GetTag(TAG_RELEASEDATE), t.GetTag(TAG_YEAR));
       if s <> '' then
         lblAlbumYear.Caption := Format('%s (%s)', [lblAlbumYear.Caption, s]);
+
       lblLyricist.Caption := '作詞:' + StrDef(t.GetTag(TAG_LYRICIST), '<No Data>');
       lblComposer.Caption := '作曲:' + StrDef(t.GetTag(TAG_COMPOSER), '<No Data>');
+
+      Application.ProcessMessages;
       _ShowLyrics(t.GetTag(TAG_LYRICS));
       memTagInfo.Clear;
       for i:= 0 to t.Count-1 do
@@ -1641,7 +1666,20 @@ begin
       	memTagInfo.Lines.Add(t.CoverArts[i].Name + '.Description=' + t.CoverArts[i].Description);
       end;
     end;
-    memTagInfo.Lines.Add('FilePath='+t.FileName);
+
+    //WMPのタグ情報
+    memTagInfo.Lines.Add('');
+    memTagInfo.Lines.Add(sTag + '==== Windows Media Player Tag Infomation ====');
+    //取得できる項目の数だけ処理
+    for i := 0 to wmp.currentMedia.attributeCount-1 do
+    begin
+      //項目名を取得
+      sTag := wmp.currentMedia.getAttributeName(i);  //項目名
+      //項目の値を取得
+      s := wmp.currentMedia.getItemInfo(sTag);  //値を取得
+      memTagInfo.Lines.Add(sTag + '=' + s);
+    end;
+    memTagInfo.Lines.Add('WMP/TotalTags=' + IntToStr(wmp.currentMedia.attributeCount));
   finally
     t.Free;
     bmp.Free;

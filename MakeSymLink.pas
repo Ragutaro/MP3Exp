@@ -14,15 +14,16 @@ type
   TfrmMakeSymLink = class(TForm)
     btnOk: TButton;
     btnCancel: TButton;
-    fraMusic: TfraOpenFolder;
     edtNewFolder: TEdit;
     HideBack1: THideBack;
     Label1: TLabel;
+    Label2: TLabel;
+    edtSrc: TButtonedEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
-    procedure fraMusicedtPathRightButtonClick(Sender: TObject);
+    procedure edtSrcRightButtonClick(Sender: TObject);
   private
     { Private 宣言 }
     procedure _LoadSettings;
@@ -56,6 +57,14 @@ begin
   Close;
 end;
 
+procedure TfrmMakeSymLink.edtSrcRightButtonClick(Sender: TObject);
+var
+  sRoot, sSelect : String;
+begin
+  if SelectDirectory('音楽ファイルのあるフォルダを選択', sRoot, sSelect) then
+    edtSrc.Text := sSelect;
+end;
+
 procedure TfrmMakeSymLink.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   _SaveSettings;
@@ -67,16 +76,6 @@ procedure TfrmMakeSymLink.FormCreate(Sender: TObject);
 begin
   DisableVclStyles(Self);
   _LoadSettings;
-end;
-
-procedure TfrmMakeSymLink.fraMusicedtPathRightButtonClick(Sender: TObject);
-var
-  sRoot, sSelect : String;
-begin
-  if SelectDirectory('音楽ファイルのあるフォルダを選択', sRoot, sSelect) then
-  begin
-    fraMusic.edtPath.Text := sSelect;
-  end;
 end;
 
 procedure TfrmMakeSymLink._Execute;
@@ -99,7 +98,7 @@ begin
   try
     n := frmMain.tvwTree.Selected;
     sSrcPath := av.sMusicFolder + frmMain.tvwTree.GetFullNodePath(n) + '\' + edtNewFolder.Text;
-    sDstPath := Trim(fraMusic.edtPath.Text);
+    sDstPath := Trim(edtSrc.Text);
     sl.Add('chcp');
     sl.Add('chcp 65001');
     sl.Add('@echo on');

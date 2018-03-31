@@ -149,6 +149,7 @@ type
     procedure btnCloseHelpClick(Sender: TObject);
     procedure Label4Click(Sender: TObject);
     procedure Label6Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private 宣言 }
     procedure _LoadSettings;
@@ -310,7 +311,6 @@ procedure TfrmEditTag.FormCreate(Sender: TObject);
 begin
   DisableVclStyles(Self);
   _LoadSettings;
-  _LoadTags;
 end;
 
 procedure TfrmEditTag.FormKeyDown(Sender: TObject; var Key: Word;
@@ -319,6 +319,11 @@ begin
   Case Key of
     VK_ESCAPE : Close;
   end;
+end;
+
+procedure TfrmEditTag.FormShow(Sender: TObject);
+begin
+  _LoadTags;
 end;
 
 procedure TfrmEditTag.Label4Click(Sender: TObject);
@@ -1053,6 +1058,7 @@ var
   tag : TTags;
   bmpSrc, bmpDst : TBitmap;
 begin
+  Application.ProcessMessages;
   sl := TStringList.Create;
   try
     GetFiles(av.sMusicFolder + frmMain.tvwTree.GetFullNodePath(frmMain.tvwTree.Selected), '*.*', sl, True);
@@ -1072,7 +1078,7 @@ begin
           item.SubItems.Add(tag.GetTag(TAG_SUBTITLE));
           item.SubItems.Add(tag.GetTag(TAG_ALBUM));
           item.SubItems.Add(tag.GetTag(TAG_TRACKNUMBER));
-          item.SubItems.Add(tag.GetTag(TAG_YEAR));
+          item.SubItems.Add(StrDef(tag.GetTag(TAG_RELEASEDATE), tag.GetTag(TAG_YEAR)));
           item.SubItems.Add(tag.GetTag(TAG_DISCNUMBER));
           item.SubItems.Add(tag.GetTag(TAG_ARTIST));
           item.SubItems.Add(tag.GetTag(TAG_ALBUMARTIST));
@@ -1098,6 +1104,7 @@ begin
           bmpDst.Free;
         end;
       end;
+      Application.ProcessMessages;
     end;
   finally
     sl.Free;
@@ -1130,7 +1137,7 @@ begin
           item.SubItems.Add(tag.GetTag(TAG_SUBTITLE));
           item.SubItems.Add(tag.GetTag(TAG_ALBUM));
           item.SubItems.Add(tag.GetTag(TAG_TRACKNUMBER));
-          item.SubItems.Add(tag.GetTag(TAG_YEAR));
+          item.SubItems.Add(StrDef(tag.GetTag(TAG_RELEASEDATE), tag.GetTag(TAG_YEAR)));
           item.SubItems.Add(tag.GetTag(TAG_DISCNUMBER));
           item.SubItems.Add(tag.GetTag(TAG_ARTIST));
           item.SubItems.Add(tag.GetTag(TAG_ALBUMARTIST));
@@ -1195,7 +1202,8 @@ begin
     tag.SetTag(TAG_SUBTITLE,    item.SubItems[1]);
     tag.SetTag(TAG_ALBUM,       item.SubItems[2]);
     tag.SetTag(TAG_TRACKNUMBER, item.SubItems[3]);
-    tag.SetTag(TAG_YEAR,        item.SubItems[4]);
+    tag.SetTag(TAG_YEAR,        item.SubItems[4]);  //.m4aは Year を読まず ReleaseDate を読むため、
+    tag.SetTag(TAG_RELEASEDATE, item.SubItems[4]);  //両方保存する
     tag.SetTag(TAG_DISCNUMBER,  item.SubItems[5]);
     tag.SetTag(TAG_ARTIST,      item.SubItems[6]);
     tag.SetTag(TAG_ALBUMARTIST, item.SubItems[7]);

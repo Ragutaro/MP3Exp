@@ -55,7 +55,7 @@ object frmRename: TfrmRename
   end
   object btnOK: TButton
     Left = 347
-    Top = 306
+    Top = 305
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -65,7 +65,7 @@ object frmRename: TfrmRename
   end
   object btnCancel: TButton
     Left = 430
-    Top = 306
+    Top = 305
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]

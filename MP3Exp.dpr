@@ -9,8 +9,7 @@ uses
   Utils in 'Utils.pas',
   Rename in 'Rename.pas' {frmRename},
   CoverArt in 'CoverArt.pas' {frmCoverArt},
-  MakeSymLink in 'MakeSymLink.pas' {frmMakeSymLink},
-  untOpenFolder in '..\..\Components\untOpenFolder.pas' {fraOpenFolder: TFrame};
+  MakeSymLink in 'MakeSymLink.pas' {frmMakeSymLink};
 
 {$R *.res}
 
