@@ -379,7 +379,7 @@ begin
       Item.ImageIndex := -1;
 
     //トータルタイム列
-    if Item.Caption = '' then
+    if LeftStr(Item.Caption, 12) = 'Total Songs:' then
     begin
       Brush.Color := av.cTotal;
       Font.Color  := av.cTotalFont;
@@ -393,7 +393,7 @@ var
   m : IWMPMedia;
 begin
   item := TListItemEx(lvwList.Selected);
-  if (item <> Nil) and (item.Caption <> '') then
+  if (item <> Nil) and (LeftStr(Item.Caption, 12) <> 'Total Songs:') then
   begin
     Case tvwTree.Selected.ImageIndex of
       ICO_MUSIC_ALBUM_CLOSE, ICO_MUSIC_ALBUM_CLOSE_SYM : _CreatePlayList;
@@ -539,7 +539,7 @@ begin
       for i := lvwList.Items.Count-1 downto 0 do
       begin
         item := TListItemEx(lvwList.Items[i]);
-        if (item.Caption <> '') and (item.Selected) then
+        if (LeftStr(Item.Caption, 12) <> 'Total Songs:') and (item.Selected) then
         begin
           DeleteFile(item.sFullPath);
           item.Delete;
@@ -1106,17 +1106,21 @@ end;
 procedure TfrmMain.SpTBXSplitter2MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
+  ms : TMemoryStream;
   t : TTags;
 begin
   t := TTags.Create;
+  ms := TMemoryStream.Create;
   try
-    t.LoadFromFile(wmp.currentMedia.sourceURL);
+    ms.LoadFromFile(wmp.currentMedia.sourceURL);
+    t.LoadFromStream(ms);
     if t.Loaded then
     begin
       _ShowLyrics(t.GetTag(TAG_LYRICS));
     end;
   finally
     t.Free;
+    ms.Free;
   end;
 end;
 
@@ -1288,7 +1292,7 @@ begin
     begin
       _ListMediaFiles;
       item := TListItemEx(lvwList.Items[0]);
-      if (item <> Nil) and (item.Caption <> '') then
+      if (item <> Nil) and (LeftStr(Item.Caption, 12) <> 'Total Songs:') then
       begin
         _CreatePlayList;
         wmp.settings.volume := 100;
@@ -1339,7 +1343,7 @@ begin
     for i := lvwList.Items.Count-1 downto 0 do
     begin
     	item := TListItemEx(lvwList.Items[i]);
-      if (item.Selected) and (item.Caption <> '') then
+      if (item.Selected) and (LeftStr(Item.Caption, 12) <> 'Total Songs:') then
       begin
         sName := ExtractFileName(item.sFullPath);
         begin
@@ -1473,7 +1477,6 @@ end;
 
 procedure TfrmMain._ListMediaFiles;
 var
-  t : TTags;
   n : TTreeNode;
   m : IWMPMedia;
   item : TListItemEx;
@@ -1497,21 +1500,15 @@ begin
         begin
           sFilename := sRootDir + sr.Name;
           //タイトル、サブタイトル、拡張子を取得
-          t := TTags.Create;
-          try
-            t.LoadFromFile(sFilename);
-            sTitle    := StrDef(t.GetTag(TAG_TITLE), ExtractFileBody(sr.Name));
-            sSubTitle := t.GetTag(TAG_SUBTITLE);
-            if sSubTitle <> '' then
-              sTitle := Format('%s ～%s～', [sTitle, sSubTitle]);
-            sExt := ExtractFileExt(sFilename);
-          finally
-            t.Free;
-          end;
-          //bps、ファイルサイズを取得
           m := wmp.newMedia(sFilename);
-          iBit  := StrToIntDef(m.getItemInfo('Bitrate'), 0) div 1000;
-          iSize := StrToIntDef(m.getItemInfo('Filesize'), 0) div 1000;
+          sTitle := m.getItemInfo('Title');                             //以下、タイトルとサブタイトルの取得
+          sSubTitle := m.getItemInfo(TAG_SUBTITLE);
+          if sSubTitle <> '' then
+            sTitle := Format('%s ～%s～', [sTitle, sSubTitle]);
+          sExt := ExtractFileExt(sFilename);                            //拡張子
+          iBit  := StrToIntDef(m.getItemInfo('Bitrate'), 0) div 1000;   //ビットレート
+          iSize := StrToIntDef(m.getItemInfo('Filesize'), 0) div 1000;  //ファイルサイズ
+
           //リストに追加
           item  := TListItemEx(lvwList.Items.Add);
           item.Caption := sTitle;
@@ -1621,15 +1618,18 @@ end;
 
 procedure TfrmMain._LoadAlbumCover;
 var
+  ms : TMemoryStream;
   t : TTags;
   bmp : TBitmap;
   i : Integer;
   s, sTag, sTitle, sSubTitle : String;
 begin
+  ms := TMemoryStream.Create;
   t := TTags.Create;
   bmp := TBitmap.Create;
   try
-    t.LoadFromFile(wmp.currentMedia.sourceURL);
+    ms.LoadFromFile(wmp.currentMedia.sourceURL);
+    t.LoadFromStream(ms);
     if t.Loaded then
     begin
       try
@@ -1681,6 +1681,7 @@ begin
     end;
     memTagInfo.Lines.Add('WMP/TotalTags=' + IntToStr(wmp.currentMedia.attributeCount));
   finally
+    ms.Free;
     t.Free;
     bmp.Free;
   end;

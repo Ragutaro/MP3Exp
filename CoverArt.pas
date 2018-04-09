@@ -145,14 +145,18 @@ end;
 
 procedure TfrmCoverArt._LoadCoverArt(const sFilename: String);
 var
+  ms : TMemoryStream;
   item : TCover;
   t : TTags;
   i : Integer;
   bmp, bmpList : TBitmap;
 begin
   t := TTags.Create;
+  ms := TMemoryStream.Create;
   try
-    t.LoadFromFile(sFilename);
+    ms.LoadFromFile(sFilename);
+    t.LoadFromStream(ms);
+//    t.LoadFromFile(sFilename);
     if t.Loaded then
     begin
       for i := 0 to t.CoverArtCount-1 do
@@ -197,6 +201,7 @@ begin
     end;
   finally
     t.Free;
+    ms.Free;
   end;
 end;
 

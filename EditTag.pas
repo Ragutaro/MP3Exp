@@ -91,6 +91,7 @@ type
     lblHelp: THideLabel;
     SpTBXToolbar2: TSpTBXToolbar;
     btnCloseHelp: TSpTBXItem;
+    timStart: TTimer;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure cmbData2Change(Sender: TObject);
@@ -149,7 +150,8 @@ type
     procedure btnCloseHelpClick(Sender: TObject);
     procedure Label4Click(Sender: TObject);
     procedure Label6Click(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    procedure timStartTimer(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
   private
     { Private 宣言 }
     procedure _LoadSettings;
@@ -290,6 +292,11 @@ begin
   _GetValueFromListItems(8, cmbData9);
 end;
 
+procedure TfrmEditTag.FormActivate(Sender: TObject);
+begin
+  lvwList.Refresh;
+end;
+
 procedure TfrmEditTag.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   _SaveSettings;
@@ -319,11 +326,6 @@ begin
   Case Key of
     VK_ESCAPE : Close;
   end;
-end;
-
-procedure TfrmEditTag.FormShow(Sender: TObject);
-begin
-  _LoadTags;
 end;
 
 procedure TfrmEditTag.Label4Click(Sender: TObject);
@@ -399,11 +401,23 @@ procedure TfrmEditTag.lvwListCustomDrawItem(Sender: TCustomListView;
   Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
 begin
   lvwList.ColorizeLines(Item, State, DefaultDraw);
+  if (TlvwList(Item).sFullPath = av.sCurrentSong) and ContainsText(frmMain.wmp.status, '再生中') then
+  begin
+    with lvwList.Canvas do
+    begin
+      Brush.Style := bsSolid;
+      Brush.Color := $00F7F7FF;
+    end;
+    Item.ImageIndex := 0;
+  end
+  else
+    Item.ImageIndex := Item.StateIndex;
 end;
 
 procedure TfrmEditTag.lvwListSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 var
+  ms : TMemoryStream;
   i : Integer;
   bmp : TBitmap;
   tag : TTags;
@@ -423,8 +437,10 @@ begin
       imgCover.Clear;
       tag := TTags.Create;
       bmp := TBitmap.Create;
+      ms  := TMemoryStream.Create;
       try
-        tag.LoadFromFile(TlvwList(Item).sFullPath);
+        ms.LoadFromFile(TlvwList(Item).sFullPath);
+        tag.LoadFromStream(ms);
         if tag.Loaded then
         begin
           for i := 0 to tag.CoverArtCount-1 do
@@ -436,6 +452,7 @@ begin
       finally
         tag.Free;
         bmp.Free;
+        ms.Free;
       end;
     finally
       lvwCover.Items.EndUpdate;
@@ -627,6 +644,12 @@ begin
   lblLyricsInfo.Caption := '歌詞を保存しました。';
 end;
 
+procedure TfrmEditTag.timStartTimer(Sender: TObject);
+begin
+  timStart.Enabled := False;
+  _LoadTags;
+end;
+
 procedure TfrmEditTag.btnAddAPICClick(Sender: TObject);
 var
   sFilename : String;
@@ -689,7 +712,7 @@ begin
             try
               ut_ResizeImage(imgCoverPreview.Picture.Bitmap, bmp, 24);
               imgList.AddMasked(bmp, clFuchsia);
-              item.ImageIndex := imgList.Count-1;
+              item.StateIndex := imgList.Count-1;
             finally
               bmp.Free;
             end;
@@ -705,7 +728,7 @@ begin
   begin
     //編集
     item := TlvwList(lvwList.Selected);
-    if item <> nil then
+    if (item <> nil) and (av.sCurrentSong <> frmMain.wmp.currentMedia.sourceURL) then
     begin
       tag := TTags.Create;
       ms := TMemoryStream.Create;
@@ -761,7 +784,7 @@ begin
       finally
         tag.Free;
       end;
-      itemList.ImageIndex := -1;
+      itemList.StateIndex := -1;
     end;
     lblInfo.Caption := '処理中:' + itemList.sFullPath;
     Application.ProcessMessages;
@@ -796,7 +819,7 @@ begin
       tag.CoverArts[itemCover.Index].Delete;
       tag.SaveToFile(sFilename);
       if tag.CoverArtCount = 0 then
-        itemList.ImageIndex := -1;
+      	itemList.StateIndex := -1;
     finally
       tag.Free;
     end;
@@ -839,10 +862,11 @@ var
   i : Integer;
   item : TlvwList;
 begin
+  lvwList.Repaint;
   for i := 0 to lvwList.Items.Count-1 do
   begin
     item := TlvwList(lvwList.Items[i]);
-    if item.Selected then
+    if item.Selected and (item.ImageIndex <> 0) then
     begin
       lblInfo.Caption := 'タグを更新中:' + item.sFullPath;
       Application.ProcessMessages;
@@ -1052,59 +1076,69 @@ end;
 
 procedure TfrmEditTag._LoadTagsFiles;
 var
+  ms : TMemoryStream;
   item : TlvwList;
   sl : TStringList;
   s, sExt : String;
   tag : TTags;
   bmpSrc, bmpDst : TBitmap;
+  i : Integer;
 begin
-  Application.ProcessMessages;
   sl := TStringList.Create;
   try
     GetFiles(av.sMusicFolder + frmMain.tvwTree.GetFullNodePath(frmMain.tvwTree.Selected), '*.*', sl, True);
-    for s in sl do
+    for i := 0 to sl.Count-1do
     begin
+      s := sl[i];
       sExt := ExtractFileExt(s);
       if ContainsText(av.sValidExtentions, sExt) then
       begin
+        ms := TMemoryStream.Create;
         tag := TTags.Create;
         bmpSrc := TBitmap.Create;
         bmpDst := TBitmap.Create;
         try
-          tag.LoadFromFile(s);
-          item := TlvwList(lvwList.Items.Add);
-          item.Caption := ExtractFileBody(s);
-          item.SubItems.Add(tag.GetTag(TAG_TITLE));
-          item.SubItems.Add(tag.GetTag(TAG_SUBTITLE));
-          item.SubItems.Add(tag.GetTag(TAG_ALBUM));
-          item.SubItems.Add(tag.GetTag(TAG_TRACKNUMBER));
-          item.SubItems.Add(StrDef(tag.GetTag(TAG_RELEASEDATE), tag.GetTag(TAG_YEAR)));
-          item.SubItems.Add(tag.GetTag(TAG_DISCNUMBER));
-          item.SubItems.Add(tag.GetTag(TAG_ARTIST));
-          item.SubItems.Add(tag.GetTag(TAG_ALBUMARTIST));
-          item.SubItems.Add(tag.GetTag(TAG_LYRICIST));
-          item.SubItems.Add(tag.GetTag(TAG_COMPOSER));
-          item.SubItems.Add(tag.GetTag(TAG_GENRE));
-          item.SubItems.Add(tag.GetTag(TAG_COMMENT));
-          item.SubItems.Add(ReplaceText(tag.GetTag(TAG_LYRICS), #13#10, '\n'));
-          item.sFullPath := s;
-          item.ImageIndex := -1;
-          try
-            tag.LoadCoverArt(bmpSrc, tag, 0);
-            ut_ResizeImage(bmpSrc, bmpDst, 24);
-            imgList.AddMasked(bmpDst, clFuchsia);
-            if bmpSrc.Width > 0 then
-              item.ImageIndex := imgList.Count-1;
-          except
-            //
+          ms.LoadFromFile(s);
+          tag.LoadFromStream(ms);
+          if tag.Loaded then
+          begin
+            item := TlvwList(lvwList.Items.Add);
+            item.Caption := ExtractFileBody(s);
+            item.SubItems.Add(tag.GetTag(TAG_TITLE));
+            item.SubItems.Add(tag.GetTag(TAG_SUBTITLE));
+            item.SubItems.Add(tag.GetTag(TAG_ALBUM));
+            item.SubItems.Add(tag.GetTag(TAG_TRACKNUMBER));
+            item.SubItems.Add(StrDef(tag.GetTag(TAG_RELEASEDATE), tag.GetTag(TAG_YEAR)));
+            item.SubItems.Add(tag.GetTag(TAG_DISCNUMBER));
+            item.SubItems.Add(tag.GetTag(TAG_ARTIST));
+            item.SubItems.Add(tag.GetTag(TAG_ALBUMARTIST));
+            item.SubItems.Add(tag.GetTag(TAG_LYRICIST));
+            item.SubItems.Add(tag.GetTag(TAG_COMPOSER));
+            item.SubItems.Add(tag.GetTag(TAG_GENRE));
+            item.SubItems.Add(tag.GetTag(TAG_COMMENT));
+            item.SubItems.Add(ReplaceText(tag.GetTag(TAG_LYRICS), #13#10, '\n'));
+            item.sFullPath := s;
+            item.ImageIndex := -1;
+            try
+              tag.LoadCoverArt(bmpSrc, tag, 0);
+              ut_ResizeImage(bmpSrc, bmpDst, 24);
+              imgList.AddMasked(bmpDst, clFuchsia);
+              if bmpSrc.Width > 0 then
+              begin
+              	item.ImageIndex := imgList.Count-1;
+                item.StateIndex := imgList.Count-1;
+              end;
+            except
+              //
+            end;
           end;
         finally
+          ms.Free;
           tag.Free;
           bmpSrc.Free;
           bmpDst.Free;
         end;
       end;
-      Application.ProcessMessages;
     end;
   finally
     sl.Free;
@@ -1198,20 +1232,23 @@ begin
   tag := TTags.Create;
   try
     tag.LoadFromFile(sFile);
-    tag.SetTag(TAG_TITLE,       item.SubItems[0]);
-    tag.SetTag(TAG_SUBTITLE,    item.SubItems[1]);
-    tag.SetTag(TAG_ALBUM,       item.SubItems[2]);
-    tag.SetTag(TAG_TRACKNUMBER, item.SubItems[3]);
-    tag.SetTag(TAG_YEAR,        item.SubItems[4]);  //.m4aは Year を読まず ReleaseDate を読むため、
-    tag.SetTag(TAG_RELEASEDATE, item.SubItems[4]);  //両方保存する
-    tag.SetTag(TAG_DISCNUMBER,  item.SubItems[5]);
-    tag.SetTag(TAG_ARTIST,      item.SubItems[6]);
-    tag.SetTag(TAG_ALBUMARTIST, item.SubItems[7]);
-    tag.SetTag(TAG_LYRICIST,    item.SubItems[8]);
-    tag.SetTag(TAG_COMPOSER,    item.SubItems[9]);
-    tag.SetTag(TAG_GENRE,       item.SubItems[10]);
-    tag.SetTag(TAG_COMMENT,     item.SubItems[11]);
-    tag.SaveToFile(sFile);
+    if tag.Loaded then
+    begin
+      tag.SetTag(TAG_TITLE,       item.SubItems[0]);
+      tag.SetTag(TAG_SUBTITLE,    item.SubItems[1]);
+      tag.SetTag(TAG_ALBUM,       item.SubItems[2]);
+      tag.SetTag(TAG_TRACKNUMBER, item.SubItems[3]);
+      tag.SetTag(TAG_YEAR,        item.SubItems[4]);  //.m4aは Year を読まず ReleaseDate を読むため、
+      tag.SetTag(TAG_RELEASEDATE, item.SubItems[4]);  //両方保存する
+      tag.SetTag(TAG_DISCNUMBER,  item.SubItems[5]);
+      tag.SetTag(TAG_ARTIST,      item.SubItems[6]);
+      tag.SetTag(TAG_ALBUMARTIST, item.SubItems[7]);
+      tag.SetTag(TAG_LYRICIST,    item.SubItems[8]);
+      tag.SetTag(TAG_COMPOSER,    item.SubItems[9]);
+      tag.SetTag(TAG_GENRE,       item.SubItems[10]);
+      tag.SetTag(TAG_COMMENT,     item.SubItems[11]);
+      tag.SaveToFile(sFile);
+    end;
   finally
     tag.Free;
   end;

@@ -294,6 +294,7 @@ end;
 
 procedure ut_ExportAPIC(const sMediaFilename: String; iFrameIndex: Integer);
 var
+  ms : TMemoryStream;
   jpg : TJPEGImage;
   png : TPngImage;
   gif : TGIFImage;
@@ -308,8 +309,11 @@ begin
   begin
     sFileName := RemoveFileExt(frmMain.SavePictureDialog.FileName);
     t := TTags.Create;
+    ms := TMemoryStream.Create;
     try
-      t.LoadFromFile(sMediaFilename);
+      ms.LoadFromFile(sMediaFilename);
+      t.LoadFromStream(ms);
+//      t.LoadFromFile(sMediaFilename);
       if t.Loaded then
       begin
         Case t.CoverArts[iFrameIndex].PictureFormat of
@@ -357,6 +361,7 @@ begin
       end;
     finally
       t.Free;
+      ms.Free;
     end;
   end;
 end;
@@ -428,9 +433,9 @@ begin
   if frmMain.lvwList.Items.Count > 0 then
   begin
     item := TListItemEx(frmMain.lvwList.Items.Add);
-    item.Caption := '';
+    item.Caption := 'Total Songs:' + IntToStr(frmMain.lvwList.Items.Count-1);
     item.SubItems.Add(ut_CreateTotalTime(iTotalTime));
-    item.SubItems.Add('');
+    item.SubItems.Add(IntToStr((iTotalSize*8) div iTotalTime) + 'K');
     item.SubItems.Add(FormatFloat('###,###', iTotalSize) + 'KB');
     item.sFullPath := 'path is not permitted';
     item.ImageIndex := -1;

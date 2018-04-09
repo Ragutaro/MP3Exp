@@ -1,6 +1,6 @@
 object frmCoverArt: TfrmCoverArt
-  Left = 323
-  Top = 474
+  Left = 1567
+  Top = 148
   BorderIcons = [biSystemMenu]
   Caption = 'Album Art List'
   ClientHeight = 197
@@ -28,6 +28,7 @@ object frmCoverArt: TfrmCoverArt
     Align = alLeft
     Columns = <>
     HideSelection = False
+    HotTrackStyles = [htHandPoint, htUnderlineHot]
     LargeImages = imgCover
     ReadOnly = True
     RowSelect = True
@@ -39,9 +40,13 @@ object frmCoverArt: TfrmCoverArt
     OnCustomDrawItem = lvwListCustomDrawItem
     OnCreateItemClass = lvwListCreateItemClass
     OnSelectItem = lvwListSelectItem
-    SortOrder = soAscending
-    WrapAround = True
     DefaultSortOrder = soAscending
+    EvenColor = clWindow
+    HoverColor = 16774117
+    HoverFontColor = clTeal
+    SortOrder = soAscending
+    UnevenColor = 16710392
+    WrapAround = True
   end
   object Splitter: TSpTBXSplitter
     Left = 81
