@@ -14,6 +14,7 @@ uses
 {$R *.res}
 
 begin
+//  ReportMemoryLeaksOnShutdown := True;
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   TStyleManager.TrySetStyle('Windows10');

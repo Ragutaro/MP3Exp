@@ -196,7 +196,7 @@ type
   TApplicationValues = record
     sMusicFolder, sCurrentSong, sCurrentDir : String;
     sValidExtentions, sPlaylistDir : String;
-    sMp3Gain, sLyricsMaster : String;
+    sMp3Gain, sLyricsMaster, sCurrentLyric : String;
     cNowPlay, cNowPlayFont, cTotal, cTotalFont, cAlbumArt : TColor;
     iX1, iY1, iX2, iY2, iX3, iY3, iX4, iY4 : Integer;
   end;
@@ -865,6 +865,7 @@ begin
     n := tvwTree.Items.AddChild(tvwTree.Selected, s);
     n.ImageIndex    := ICO_PLAYLIST_FILE;
     n.SelectedIndex := ICO_PLAYLIST_FILE;
+    tvwTree.Selected.AlphaSort(True);
     sl := TStringList.Create;
     try
       sFile := Format('%s\%s.m3u', [av.sPlaylistDir, s]);
@@ -1109,18 +1110,21 @@ var
   ms : TMemoryStream;
   t : TTags;
 begin
-  t := TTags.Create;
-  ms := TMemoryStream.Create;
-  try
-    ms.LoadFromFile(wmp.currentMedia.sourceURL);
-    t.LoadFromStream(ms);
-    if t.Loaded then
-    begin
-      _ShowLyrics(t.GetTag(TAG_LYRICS));
+  if wmp.currentMedia <> nil then
+  begin
+    t := TTags.Create;
+    ms := TMemoryStream.Create;
+    try
+      ms.LoadFromFile(wmp.currentMedia.sourceURL);
+      t.LoadFromStream(ms);
+      if t.Loaded then
+      begin
+        _ShowLyrics(av.sCurrentLyric);
+      end;
+    finally
+      t.Free;
+      ms.Free;
     end;
-  finally
-    t.Free;
-    ms.Free;
   end;
 end;
 
@@ -1477,14 +1481,17 @@ end;
 
 procedure TfrmMain._ListMediaFiles;
 var
+//  m : IWMPMedia;
   n : TTreeNode;
-  m : IWMPMedia;
   item : TListItemEx;
   sr : TSearchRec;
   sRootDir, sExt, sFilename, sTitle, sSubTitle : String;
   iBit, iSize, iTotal : Integer;
   dTotal : Double;
   bMedia : Boolean;
+  tag : TTags;
+  saa : TSourceAudioAttributes;
+  ms : TMemoryStream;
 begin
   sRootDir := av.sMusicFolder + tvwTree.GetFullNodePath(tvwTree.Selected) + '\';
   lvwList.Items.BeginUpdate;
@@ -1499,32 +1506,75 @@ begin
         if (sr.Name <> '.') and (sr.Name <> '..') and ContainsText(av.sValidExtentions, sExt) then
         begin
           sFilename := sRootDir + sr.Name;
-          //タイトル、サブタイトル、拡張子を取得
-          m := wmp.newMedia(sFilename);
-          sTitle := m.getItemInfo('Title');                             //以下、タイトルとサブタイトルの取得
-          sSubTitle := m.getItemInfo(TAG_SUBTITLE);
-          if sSubTitle <> '' then
-            sTitle := Format('%s ～%s～', [sTitle, sSubTitle]);
-          sExt := ExtractFileExt(sFilename);                            //拡張子
-          iBit  := StrToIntDef(m.getItemInfo('Bitrate'), 0) div 1000;   //ビットレート
-          iSize := StrToIntDef(m.getItemInfo('Filesize'), 0) div 1000;  //ファイルサイズ
+//          m := wmp.newMedia(sFilename);
+//          sTitle:= StrDef(m.getItemInfo('Title'), ExtractFileBody(sFilename));
+//          sExt  := ExtractFileExt(sFilename);
+//          iBit  := StrToIntDef(m.getItemInfo('Bitrate'), 0) div 1000;
+//          iSize := StrToIntDef(m.getItemInfo('Filesize'), 0) div 1000;
+//          //リストに追加
+//          item  := TListItemEx(lvwList.Items.Add);
+//          item.Caption := sTitle;
+//          item.SubItems.Add(m.durationString);
+//          item.SubItems.Add(IntToStr(iBit) + 'K');
+//          item.SubItems.Add(FormatFloat('#,###', iSize) + 'KB');
+//          item.SubItems.Add(sExt);
+//          item.sFullPath := sFilename;
+//          item.ImageIndex := -1;
+//          dTotal := dTotal + m.duration;
+//          iTotal := iTotal + iSize;
+//          bMedia := True;
 
-          //リストに追加
-          item  := TListItemEx(lvwList.Items.Add);
-          item.Caption := sTitle;
-          item.SubItems.Add(m.durationString);
-          item.SubItems.Add(IntToStr(iBit) + 'K');
-          item.SubItems.Add(FormatFloat('#,###', iSize) + 'KB');
-          item.SubItems.Add(sExt);
-          item.sFullPath := sFilename;
-          item.ImageIndex := -1;
-          dTotal := dTotal + m.duration;
-          iTotal := iTotal + iSize;
-          bMedia := True;
+          tag := TTags.Create;
+          try
+            if (sFilename = av.sCurrentSong) and (wmp.playState = wmppsPlaying) then
+            begin
+              ms := TMemoryStream.Create;
+              try
+            	  ms.LoadFromFile(sFilename);
+                tag.LoadFromStream(ms);
+              finally
+                ms.Free;
+              end;
+            end else
+              tag.LoadFromFile(sFilename);
+
+            if tag.Loaded then
+            begin
+              saa := TSourceAudioAttributes.Create(tag);
+              try
+                sTitle    := StrDef(tag.GetTag(TAG_TITLE), ExtractFileBody(sFilename));
+                sSubTitle := tag.GetTag(TAG_SUBTITLE);
+                if sSubTitle <> '' then
+                  sTitle := Format('%s ～%s～', [sTitle, sSubTitle]);
+                sExt  := ExtractFileExt(sFilename);
+                iBit  := saa.BitRate;
+                iSize := GetFileSize(sFilename) div 1000;
+
+                //リストに追加
+                item  := TListItemEx(lvwList.Items.Add);
+                item.Caption := sTitle;
+                item.SubItems.Add(ut_CreateTotalTime(Trunc(saa.PlayTime)));
+                item.SubItems.Add(IntToStr(iBit) + 'K');
+                item.SubItems.Add(FormatFloat('#,###', iSize) + 'KB');
+                item.SubItems.Add(sExt);
+                item.sFullPath  := sFilename;
+                item.ImageIndex := -1;
+                dTotal := dTotal + Trunc(saa.PlayTime);
+                iTotal := iTotal + iSize;
+                bMedia := True;
+              finally
+                saa.Free;
+              end;
+            end;
+          finally
+            tag.Free;
+          end;
         end;
       until FindNext(sr) <> 0;
       FindClose(sr);
     end;
+    if dTotal = 0 then
+      dTotal := 1;
     ut_CalculateTotals(Trunc(dTotal), iTotal);
 
     if bMedia then
@@ -1655,7 +1705,8 @@ begin
       lblComposer.Caption := '作曲:' + StrDef(t.GetTag(TAG_COMPOSER), '<No Data>');
 
       Application.ProcessMessages;
-      _ShowLyrics(t.GetTag(TAG_LYRICS));
+      av.sCurrentLyric := t.GetTag(TAG_LYRICS);
+      _ShowLyrics(av.sCurrentLyric);
       memTagInfo.Clear;
       for i:= 0 to t.Count-1 do
         memTagInfo.Lines.Add(t.Tags[i].Name + '=' + t.Tags[i].Value);

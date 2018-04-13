@@ -313,7 +313,6 @@ begin
     try
       ms.LoadFromFile(sMediaFilename);
       t.LoadFromStream(ms);
-//      t.LoadFromFile(sMediaFilename);
       if t.Loaded then
       begin
         Case t.CoverArts[iFrameIndex].PictureFormat of
