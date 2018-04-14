@@ -194,7 +194,7 @@ type
   private
     sDescription : String;
     iPictureID : Integer;
-    bmp : TBitmap;
+//    bmp : TBitmap;
   end;
 
 
@@ -366,24 +366,49 @@ procedure TfrmEditTag.lvwCoverDblClick(Sender: TObject);
 var
   itemList : TlvwList;
   itemCover : TlvwCover;
+  bmp : TBitmap;
+  tag : TTags;
 begin
   itemCover := TlvwCover(lvwCover.Selected);
   itemList := TlvwList(lvwList.Selected);
   if (itemCover <> nil) and (itemList <> nil) then
   begin
-    ut_ResizeImage(itemCover.bmp, imgCoverPreview.Picture.Bitmap, 150);
-    ut_CreateCoverPictureList(cmbCoverTYpe);
-    cmbCoverTYpe.ItemIndex  := itemCover.iPictureID;
-    edtCover.Text           := itemCover.sDescription;
-    lblEditCoverSize.Caption:= Format('%d x %d', [itemCover.bmp.Width, itemCover.bmp.Height]);
-    lblCoverPath.Caption    := itemList.sFullPath;
-    btnAddCover.Caption     := '更新';
-    tabEditCover.Caption    := 'アルバムアートの編集';
-    tabEditCover.Tag        := 1;
-    tabEditCover.Visible    := True;
-    SpTBXTabControl1.ActiveTabIndex := 2;
-    tabLyric.Visible := False;
-    tabCover.Visible := False;
+    tag := TTags.Create;
+    bmp := TBitmap.Create;
+    try
+      tag.LoadFromFile(itemList.sFullPath);
+      tag.LoadCoverArt(bmp, tag, itemCover.Index);
+      ut_ResizeImage(bmp, imgCoverPreview.Picture.Bitmap, 150);
+      ut_CreateCoverPictureList(cmbCoverTYpe);
+      cmbCoverTYpe.ItemIndex  := itemCover.iPictureID;
+      edtCover.Text           := itemCover.sDescription;
+      lblEditCoverSize.Caption:= Format('%d x %d', [bmp.Width, bmp.Height]);
+      lblCoverPath.Caption    := itemList.sFullPath;
+      btnAddCover.Caption     := '更新';
+      tabEditCover.Caption    := 'アルバムアートの編集';
+      tabEditCover.Tag        := 1;
+      tabEditCover.Visible    := True;
+      SpTBXTabControl1.ActiveTabIndex := 2;
+      tabLyric.Visible := False;
+      tabCover.Visible := False;
+    finally
+      tag.Free;
+      bmp.Free;
+    end;
+
+//    ut_ResizeImage(itemCover.bmp, imgCoverPreview.Picture.Bitmap, 150);
+//    ut_CreateCoverPictureList(cmbCoverTYpe);
+//    cmbCoverTYpe.ItemIndex  := itemCover.iPictureID;
+//    edtCover.Text           := itemCover.sDescription;
+//    lblEditCoverSize.Caption:= Format('%d x %d', [itemCover.bmp.Width, itemCover.bmp.Height]);
+//    lblCoverPath.Caption    := itemList.sFullPath;
+//    btnAddCover.Caption     := '更新';
+//    tabEditCover.Caption    := 'アルバムアートの編集';
+//    tabEditCover.Tag        := 1;
+//    tabEditCover.Visible    := True;
+//    SpTBXTabControl1.ActiveTabIndex := 2;
+//    tabLyric.Visible := False;
+//    tabCover.Visible := False;
   end;
 end;
 
@@ -421,7 +446,6 @@ var
 begin
   if lvwList.SelCount = 1 then
   begin
-    Exit;
     cmbData2.Enabled := True;
     cmbData9.Enabled := True;
     toolLyrics.Enabled := True;
@@ -734,21 +758,21 @@ begin
   begin
     //編集
     item := TlvwList(lvwList.Selected);
-    if (item <> nil) and (av.sCurrentSong <> frmMain.wmp.currentMedia.sourceURL) then
+    if item <> nil then
     begin
       tag := TTags.Create;
-      ms := TMemoryStream.Create;
+//      ms := TMemoryStream.Create;
       try
-        ms.LoadFromFile(lblCoverPath.Caption);
+//        ms.LoadFromFile(lblCoverPath.Caption);
         idx := lvwCover.Selected.Index;
         tag.LoadFromFile(item.sFullPath);
         tag.CoverArts[idx].Description := StrDef(edtCover.Text, ' ');
         tag.CoverArts[idx].CoverType := cmbCoverTYpe.ItemIndex;
-        tag.CoverArts[idx].Stream.CopyFrom(ms, ms.Size);
+//        tag.CoverArts[idx].Stream.CopyFrom(ms, ms.Size);
         tag.SaveToFile(item.sFullPath);
       finally
         tag.Free;
-        ms.Free;
+//        ms.Free;
       end;
       lblInfo.Caption := ExtractFileName(item.sFullPath) + 'のアルバムアートの情報を更新しました。';
       Application.ProcessMessages;
@@ -856,7 +880,7 @@ begin
       ut_ResizeImage(bmp, imgCoverPreview.Picture.Bitmap, 150);
       lblEditCoverSize.Caption  := Format('%d x %d', [bmp.Width, bmp.Height]);
       lblCoverPath.Caption      := sFilename;
-      TlvwCover(lvwCover.Selected).bmp.Assign(bmp);
+//      TlvwCover(lvwCover.Selected).bmp.Assign(bmp);
     finally
       bmp.Free;
     end;
@@ -964,8 +988,8 @@ begin
     item.SubItems.Add(ut_ConvertPictureID2String(iPictureID));
     item.SubItems.Add(sDescription);
     item.ImageIndex := imgCover.Count-1;// index;
-    item.bmp := TBitmap.Create;
-    item.bmp.Assign(bmp);
+//    item.bmp := TBitmap.Create;
+//    item.bmp.Assign(bmp);
     item.iPictureID := iPictureID;
     item.sDescription := sDescription;
   finally
@@ -974,14 +998,14 @@ begin
 end;
 
 procedure TfrmEditTag._FreeCoverArtMemory;
-var
-  i : Integer;
+//var
+//  i : Integer;
 begin
-  if lvwCover.Items.Count > 0 then
-  begin
-    for i := lvwCover.Items.Count-1 downto 0 do
-      TlvwCover(lvwCover.Items[i]).bmp.Free;
-  end;
+//  if lvwCover.Items.Count > 0 then
+//  begin
+//    for i := lvwCover.Items.Count-1 downto 0 do
+//      TlvwCover(lvwCover.Items[i]).bmp.Free;
+//  end;
 end;
 
 function TfrmEditTag._GetLyricFromLyricsMaser: String;

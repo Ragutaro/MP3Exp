@@ -465,6 +465,93 @@ object frmEditTag: TfrmEditTag
       Caption = #12450#12523#12496#12512#12450#12540#12488#12398#36861#21152
       CustomWidth = 114
     end
+    object SpTBXTabSheet1: TSpTBXTabSheet
+      Left = 0
+      Top = 23
+      Width = 348
+      Height = 238
+      Caption = #12450#12523#12496#12512#12450#12540#12488
+      ImageIndex = -1
+      DesignSize = (
+        348
+        238)
+      TabItem = 'tabCover'
+      object lblCoverSize: TLabel
+        Left = 8
+        Top = 164
+        Width = 153
+        Height = 18
+        Alignment = taCenter
+        AutoSize = False
+      end
+      object btnAddAPIC: TButton
+        Left = 264
+        Top = 13
+        Width = 75
+        Height = 25
+        Anchors = [akTop, akRight]
+        Caption = #36861#21152
+        TabOrder = 1
+        OnClick = btnAddAPICClick
+      end
+      object btnDeleteAPIC: TButton
+        Left = 264
+        Top = 164
+        Width = 75
+        Height = 25
+        Anchors = [akTop, akRight]
+        Caption = #21066#38500
+        TabOrder = 2
+        OnClick = btnDeleteAPICClick
+      end
+      object btnDeleteAllAPIC: TButton
+        Left = 264
+        Top = 195
+        Width = 75
+        Height = 25
+        Anchors = [akTop, akRight]
+        Caption = #20840#12390#21066#38500
+        TabOrder = 3
+        OnClick = btnDeleteAllAPICClick
+      end
+      object lvwCover: THideListView
+        Left = 12
+        Top = 12
+        Width = 246
+        Height = 209
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        Columns = <
+          item
+            Caption = #12469#12452#12474
+          end
+          item
+            Caption = #31278#39006
+          end
+          item
+            Caption = #12467#12513#12531#12488
+          end>
+        ColumnClick = False
+        HideSelection = False
+        HotTrackStyles = [htHandPoint, htUnderlineHot]
+        LargeImages = imgCover
+        ReadOnly = True
+        RowSelect = True
+        PopupMenu = popCover
+        SmallImages = imgCover
+        TabOrder = 0
+        ViewStyle = vsReport
+        OnCustomDrawItem = lvwCoverCustomDrawItem
+        OnCreateItemClass = lvwCoverCreateItemClass
+        OnDblClick = lvwCoverDblClick
+        DefaultSortOrder = soAscending
+        EvenColor = clWindow
+        HoverColor = 16774117
+        HoverFontColor = clTeal
+        SortOrder = soAscending
+        UnevenColor = 16710392
+        WrapAround = False
+      end
+    end
     object SpTBXTabSheet3: TSpTBXTabSheet
       Left = 0
       Top = 23
@@ -559,93 +646,6 @@ object frmEditTag: TfrmEditTag
         Caption = #12450#12523#12496#12512#12450#12540#12488#12398#26356#26032
         TabOrder = 4
         OnClick = btnRefreshCoverArtClick
-      end
-    end
-    object SpTBXTabSheet1: TSpTBXTabSheet
-      Left = 0
-      Top = 23
-      Width = 348
-      Height = 238
-      Caption = #12450#12523#12496#12512#12450#12540#12488
-      ImageIndex = -1
-      DesignSize = (
-        348
-        238)
-      TabItem = 'tabCover'
-      object lblCoverSize: TLabel
-        Left = 8
-        Top = 164
-        Width = 153
-        Height = 18
-        Alignment = taCenter
-        AutoSize = False
-      end
-      object btnAddAPIC: TButton
-        Left = 264
-        Top = 13
-        Width = 75
-        Height = 25
-        Anchors = [akTop, akRight]
-        Caption = #36861#21152
-        TabOrder = 1
-        OnClick = btnAddAPICClick
-      end
-      object btnDeleteAPIC: TButton
-        Left = 264
-        Top = 164
-        Width = 75
-        Height = 25
-        Anchors = [akTop, akRight]
-        Caption = #21066#38500
-        TabOrder = 2
-        OnClick = btnDeleteAPICClick
-      end
-      object btnDeleteAllAPIC: TButton
-        Left = 264
-        Top = 195
-        Width = 75
-        Height = 25
-        Anchors = [akTop, akRight]
-        Caption = #20840#12390#21066#38500
-        TabOrder = 3
-        OnClick = btnDeleteAllAPICClick
-      end
-      object lvwCover: THideListView
-        Left = 12
-        Top = 12
-        Width = 246
-        Height = 209
-        Anchors = [akLeft, akTop, akRight, akBottom]
-        Columns = <
-          item
-            Caption = #12469#12452#12474
-          end
-          item
-            Caption = #31278#39006
-          end
-          item
-            Caption = #12467#12513#12531#12488
-          end>
-        ColumnClick = False
-        HideSelection = False
-        HotTrackStyles = [htHandPoint, htUnderlineHot]
-        LargeImages = imgCover
-        ReadOnly = True
-        RowSelect = True
-        PopupMenu = popCover
-        SmallImages = imgCover
-        TabOrder = 0
-        ViewStyle = vsReport
-        OnCustomDrawItem = lvwCoverCustomDrawItem
-        OnCreateItemClass = lvwCoverCreateItemClass
-        OnDblClick = lvwCoverDblClick
-        DefaultSortOrder = soAscending
-        EvenColor = clWindow
-        HoverColor = 16774117
-        HoverFontColor = clTeal
-        SortOrder = soAscending
-        UnevenColor = 16710392
-        WrapAround = False
       end
     end
     object SpTBXTabSheet2: TSpTBXTabSheet
@@ -785,7 +785,7 @@ object frmEditTag: TfrmEditTag
     Left = 16
     Top = 32
     Bitmap = {
-      494C010101000800780018001800FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010101000800800018001800FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000600000001800000001002000000000000024
       0000000000000000000000000000000000003433C3FF3433C3FF3433C3FF3433
       C3FF3433C3FF3433C3FF3433C3FF3433C3FF3433C3FF3433C3FF3433C3FF3433
@@ -1116,7 +1116,7 @@ object frmEditTag: TfrmEditTag
     Left = 288
     Top = 32
     Bitmap = {
-      494C0101040009007C0018001800FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010104000900840018001800FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000600000003000000001002000000000000048
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
